@@ -1,0 +1,335 @@
+
+@font-face {
+    font-family: 'Simply Cricket VF';
+    src: url('../fonts/Roboto-Regular.ttf');
+  }
+
+@font-face {
+  font-family: 'Old English G5';
+  src: url('../fonts/OldEnglishFive.ttf');
+}
+
+@font-face {
+  font-family: 'Italiana Regular';
+  src: url('../fonts/Italiana-Regular.ttf');
+}
+
+@font-face {
+  font-family: 'Fe Fell';
+  src: url('../fonts/FeFCsc2.ttf');
+}
+  
+  /*---------------------------------------------------------------
+  --------------------------Typography-----------------------------
+  -----------------------------------------------------------------*/
+
+  /*----------------Display Responsive Styles-------------------*/
+  .display-1-large {
+    font-family: 'Simply Cricket VF', Helvetica, Arial, sans-serif;
+    font-style: normal;
+    font-weight: 700;
+    font-size: 64px;
+    line-height: 76px;
+  }
+
+  .display-1-medium {
+    font-family: 'Simply Cricket VF', Helvetica, Arial, sans-serif;
+    font-style: normal;
+    font-weight: 700;
+    font-size: 57px;
+    line-height: 64px;
+  }
+
+  .display-1-small {
+    font-family: 'Simply Cricket VF', Helvetica, Arial, sans-serif;
+    font-style: normal;
+    font-weight: 700;
+    font-size: 45px;
+    line-height: 52px;
+  }
+
+  .display-2-large {
+    font-family: 'Simply Cricket VF', Helvetica, Arial, sans-serif;
+    font-style: normal;
+    font-weight: 700;
+    font-size: 57px;
+    line-height: 64px;
+  }
+
+  .display-2-medium {
+    font-family: 'Simply Cricket VF', Helvetica, Arial, sans-serif;
+    font-style: normal;
+    font-weight: 700;
+    font-size: 45px;
+    line-height: 52px;
+  }
+
+  .display-2-small {
+    font-family: 'Simply Cricket VF', Helvetica, Arial, sans-serif;
+    font-style: normal;
+    font-weight: 700;
+    font-size: 36px;
+    line-height: 44px;
+  }
+
+  .display-3-large {
+    font-family: 'Simply Cricket VF', Helvetica, Arial, sans-serif;
+    font-style: normal;
+    font-weight: 700;
+    font-size: 45px;
+    line-height: 52px;
+  }
+
+  .display-3-medium {
+    font-family: 'Simply Cricket VF', Helvetica, Arial, sans-serif;
+    font-style: normal;
+    font-weight: 700;
+    font-size: 36px;
+    line-height: 44px;
+  }
+
+  .display-3-small {
+    font-family: 'Simply Cricket VF', Helvetica, Arial, sans-serif;
+    font-style: normal;
+    font-weight: 700;
+    font-size: 32px;
+    line-height: 40px;
+  }
+
+  /*----------------Headline Responsive Styles-------------------*/
+  .headline-1-large {
+    font-family: 'Simply Cricket VF', Helvetica, Arial, sans-serif;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 36px;
+    line-height: 44px;
+  }
+
+  .headline-1-medium {
+    font-family: 'Simply Cricket VF', Helvetica, Arial, sans-serif;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 32px;
+    line-height: 40px;
+  }
+
+  .headline-1-small {
+    font-family: 'Simply Cricket VF', Helvetica, Arial, sans-serif;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 28px;
+    line-height: 36px;
+  }
+
+  .headline-2-large {
+    font-family: 'Simply Cricket VF', Helvetica, Arial, sans-serif;
+    font-style: normal;
+    font-weight: 700;
+    font-size: 32px;
+    line-height: 40px;
+  }
+
+  .headline-2-medium {
+    font-family: 'Simply Cricket VF', Helvetica, Arial, sans-serif;
+    font-style: normal;
+    font-weight: 700;
+    font-size: 28px;
+    line-height: 36px;
+  }
+
+  .headline-2-small {
+    font-family: 'Simply Cricket VF', Helvetica, Arial, sans-serif;
+    font-style: normal;
+    font-weight: 700;
+    font-size: 24px;
+    line-height: 32px;
+  }
+
+  .headline-3-large {
+    font-family: 'Simply Cricket VF', Helvetica, Arial, sans-serif;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 28px;
+    line-height: 36px;
+    letter-spacing: 0.25px;
+  }
+
+  .headline-3-medium {
+    font-family: 'Simply Cricket VF', Helvetica, Arial, sans-serif;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 24px;
+    line-height: 32px;
+    letter-spacing: 0.25px;
+  }
+
+  .headline-3-small {
+    font-family: 'Simply Cricket VF', Helvetica, Arial, sans-serif;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 22px;
+    line-height: 28px;
+    letter-spacing: 0.25px;
+  }
+
+  .headline-4-large {
+    font-family: 'Simply Cricket VF', Helvetica, Arial, sans-serif;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 24px;
+    line-height: 32px;
+    letter-spacing: 0.25px;
+  }
+
+  .headline-4-medium {
+    font-family: 'Simply Cricket VF', Helvetica, Arial, sans-serif;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 22px;
+    line-height: 28px;
+    letter-spacing: 0.25px;
+  }
+
+  .headline-4-small {
+    font-family: 'Simply Cricket VF', Helvetica, Arial, sans-serif;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 24px;
+    letter-spacing: 0.25px;
+  }
+
+  .headline-5-large {
+    font-family: 'Simply Cricket VF', Helvetica, Arial, sans-serif;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 22px;
+    line-height: 28px;
+  }
+
+  .headline-5-medium {
+    font-family: 'Simply Cricket VF', Helvetica, Arial, sans-serif;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 24px;
+  }
+
+  .headline-5-small {
+    font-family: 'Simply Cricket VF', Helvetica, Arial, sans-serif;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 20px;
+  }
+
+  /*----------------Subhead Responsive Styles-------------------*/
+  .subhead-1-large {
+    font-family: 'Simply Cricket VF', Helvetica, Arial, sans-serif;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 24px;
+    letter-spacing: 0.5px;
+  }
+
+  .subhead-1-small {
+    font-family: 'Simply Cricket VF', Helvetica, Arial, sans-serif;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 20px;
+    letter-spacing: 0.5px;
+  }
+
+  /*----------------Body Responsive Styles-------------------*/
+  .body-1-large {
+    font-family: 'Simply Cricket VF', Helvetica, Arial, sans-serif;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 24px;
+    letter-spacing: 0.5px;
+  }
+
+  .body-1-small {
+    font-family: 'Simply Cricket VF', Helvetica, Arial, sans-serif;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 20px;
+    letter-spacing: 0.5px;
+  }
+
+  .body-2-large {
+    font-family: 'Simply Cricket VF', Helvetica, Arial, sans-serif;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 24px;
+    letter-spacing: 0.5px;
+  }
+
+  .body-2-small {
+    font-family: 'Simply Cricket VF', Helvetica, Arial, sans-serif;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 20px;
+    letter-spacing: 0.5px;
+  }
+
+  /*----------------Legal Responsive Styles-------------------*/
+  .legal-1-book {
+    font-family: 'Simply Cricket VF', Helvetica, Arial, sans-serif;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 16px;
+    letter-spacing: 0.25px;
+  }
+
+  .legal-1-demi {
+    font-family: 'Simply Cricket VF', Helvetica, Arial, sans-serif;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 12px;
+    line-height: 16px;
+    letter-spacing: 0.25px;
+  }
+
+  .no-line-spacing {
+    letter-spacing: 0px;
+  }
+
+/* sourceMappingURL=cricketFontsCSS.5f991ad743e0a025a799.css.map */
+
+
+/* --------------------------------------------------
+------------------ Newspaper Styles -----------------
+----------------------------------------------------- */
+
+.newspaper-title {
+    font-family: 'Old English G5', Helvetica, Arial, sans-serif;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 45px;
+    line-height: 52px;
+}
+
+.newspaper-legal {
+  font-family: 'Fe Fell', Helvetica, Arial, sans-serif;
+  font-style: normal;
+  font-size: 12px;
+  line-height: 16px;
+  letter-spacing: 0.25px;
+}
+
+.newspaper-body {
+  font-family: 'Italiana Regular', Helvetica, Arial, sans-serif;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 24px;
+  letter-spacing: 0.5px;
+}

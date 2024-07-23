@@ -1,0 +1,15 @@
+.carousel-image-container {
+    height: 30vh;
+}
+
+.carousel-image {
+    position: absolute;
+    border-radius: 16px;
+    border: 8px solid #f19b00;
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+}
+
+.carousel-image.active {
+    opacity: 1;
+}

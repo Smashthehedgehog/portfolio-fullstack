@@ -1,0 +1,45 @@
+[
+    {
+        "title": "Home",
+        "icon": "bi-house-fill",
+        "path": "/"
+    },
+    {
+        "title": "About Me",
+        "icon": "bi-person-arms-up",
+        "childrens": [
+            {
+                "title": "Autobiography",
+                "path": "/Autobiography"
+            },
+            {
+                "title": "Hobbies",
+                "path": "/Hobbies"
+            }
+        ]
+    },
+    {
+        "title": "Misc.",
+        "icon": "bi-puzzle-fill",
+        "childrens": [
+            {
+                "title": "Artifacts & Work",
+                "path": "/Artifacts_And_Work"
+            },
+            {
+                "title": "Writings",
+                "path": "/Writings"
+            }
+        ]
+    },
+    {
+        "title": "My Resume",
+        "icon": "bi-file-text-fill",
+        "path": "https://drive.google.com/file/d/1KSsiAQewexXf6t2DxASHkAZJY25KRHMC/view?usp=sharing"
+    },
+    {
+        "title": "Contact Me!",
+        "icon": "bi-emoji-laughing-fill",
+        "path": "mailto:mikeani482@gmail.com"
+    }
+]

@@ -1,0 +1,59 @@
+.sidebar {
+    width: 90%;
+    height: 100%;
+}
+
+
+.sidebar-item.open .sidebar-title .toggle-btn {
+    transform: scaleY(-1);
+    transition: transform .3s;
+}
+
+.sidebar-item .sidebar-title .toggle-btn {
+    transform: scaleY(1);
+    transition: transform .3s;
+}
+
+.sidebar-title span i {
+    display: inline-block;
+    width: 1.5rem;
+}
+
+.sidebar-item.open > .sidebar-content {
+    transform: scaleY(1);
+}
+
+.sidebar-item:focus-visible {
+    outline: 0px;
+}
+
+.sidebar-content {
+    padding-top: .25em;
+    margin-left: 2em;
+    max-height: 0;
+    transition: max-height 1s ease-out;
+    overflow: hidden;
+}
+
+.sidebar-item.open > .sidebar-content {
+    max-height: 50vh; /* This should change soon */
+    transition: max-height 1s ease-in;
+}
+
+.sidebar-clickable-item:hover {
+    opacity: 50%;
+    transition: opacity 0.2s linear;
+}
+
+.sidebar-clickable-item {
+    transition: opacity 0.1s linear;
+
+}
+
+.sidebar-clickable-item:focus-visible{
+    outline: 0px;
+    border: 2px solid #000;
+    border-radius: 4px;
+    opacity: 50%;
+    transition: opacity 0.2s linear;
+}
