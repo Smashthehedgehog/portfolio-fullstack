@@ -78,8 +78,8 @@ function App() {
             </Routes>
 
           </div>
-          < Chatbot />
         </div>
+        < Chatbot />
       </div>
     </Router>
   );
