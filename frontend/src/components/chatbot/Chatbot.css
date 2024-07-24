@@ -1,0 +1,39 @@
+.chat-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+}
+
+.chat-messages {
+    max-height: 400px;
+    overflow-y: auto;
+    margin-bottom: 1rem;
+}
+
+.message {
+    padding: 0.5rem;
+    margin: 0.5rem 0;
+    border-radius: 8px;
+}
+
+.message.user {
+    background-color: #d1e7dd;
+    text-align: right;
+}
+
+.message.bot {
+    background-color: #f8d7da;
+    text-align: left;
+}
+
+input[type="text"] {
+    width: 75%;
+    padding: 0.5rem;
+    margin-right: 0.5rem;
+}
+
+button {
+    padding: 0.5rem 1rem;
+}

@@ -4,6 +4,7 @@ import './fonts.css';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 import Sidebar from './components/sidebar/Sidebar';
+import Chatbot from './components/chatbot/Chatbot';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import Home from './pages/Home';
 import Autobiography from './pages/Autobiography';
@@ -77,6 +78,7 @@ function App() {
             </Routes>
 
           </div>
+          < Chatbot />
         </div>
       </div>
     </Router>
