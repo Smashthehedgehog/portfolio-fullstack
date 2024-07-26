@@ -1,8 +1,8 @@
 .chat-container {
-    position: sticky;
+    position: fixed;
     bottom: 1rem;
     right: 1rem;
-    max-width: 300px;
+    width: 300px;
     border: 3px solid #3061e3;
     border-radius: 12px;
     background-color: #fff;
@@ -71,4 +71,16 @@ button {
 
 .send-button:focus-visible {
     outline: 2px solid black;
+}
+
+.chatbot-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    border: 3px solid #3061e3;
+    background-color: black;
+    position: fixed;
+    bottom: 30rem;
+    right: 7.9rem;
+    margin-left: auto;
 }
