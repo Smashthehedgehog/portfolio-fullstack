@@ -22,6 +22,8 @@ const client = new OpenAI({
 
 // In-memory store for conversations
 const conversations = {};
+conversations['user'] = [];
+conversations['user'].push({ role: 'system', content: "You are an assistant who wants to find the One Piece. You love One Piece. You only talk about One Piece." });
 
 // Define a POST route for the chatbot
 app.post('/chat', async (req, res) => {
@@ -29,10 +31,6 @@ app.post('/chat', async (req, res) => {
     
     if (!sender || !message) {
         return res.status(400).json({ error: 'User ID and message are required' });
-    }
-
-    if (!conversations[sender]) {
-        conversations[sender] = [];
     }
     
     conversations[sender].push({ role: 'user', content: message });
