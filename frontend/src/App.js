@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import React, { useState } from 'react';
 import './App.css';
 import './fonts.css';
 import AOS from 'aos';
@@ -18,12 +19,18 @@ import Writing_TheRoughDraftOfTheWebsite from './pages/Writing_TheRoughDraftOfTh
 
 function App() {
 
-    AOS.init({
-      once: true,
-      disable: window.innerWidth < 768,
-      duration: 700,
-      easing: "ease-out-cubic",
-    });
+  AOS.init({
+    once: true,
+    disable: window.innerWidth < 768,
+    duration: 700,
+    easing: "ease-out-cubic",
+  });
+
+  const [chatbotState, setChatbotState] = useState(false);
+
+  function toggleChatbot() {
+    setChatbotState(!chatbotState);
+  }
 
   return (
     <Router>
@@ -80,8 +87,8 @@ function App() {
 
           </div>
         </div>
-        < Chatbot />
-        < ChatbotIcon />
+        < Chatbot chatbotState={chatbotState}/>
+        < ChatbotIcon chatbotState={chatbotState} toggleChatbot={toggleChatbot}/>
       </div>
     </Router>
   );

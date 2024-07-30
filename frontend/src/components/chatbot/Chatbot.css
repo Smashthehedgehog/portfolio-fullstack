@@ -79,8 +79,26 @@ button {
     border-radius: 50%;
     border: 3px solid #3061e3;
     background-color: black;
+    margin-left: auto;
+    cursor: pointer;
+}
+
+.chat-container.closed {
+    visibility: hidden;
+}
+
+.chatbot-icon.open {
     position: fixed;
     bottom: 30rem;
     right: 7.9rem;
-    margin-left: auto;
+}
+
+.chatbot-icon.closed {
+    position: fixed;
+    bottom: 1rem;
+    right: 1rem;
+}
+
+.chat-container.open {
+    visibility: visible;
 }

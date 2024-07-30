@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import './Chatbot.css';
 
-const Chatbot = () => {
+const Chatbot = ({ chatbotState }) => {
     const [messages, setMessages] = useState([]);
     const [input, setInput] = useState('');
     const chatContainerRef = useRef(null);
@@ -34,7 +34,7 @@ const Chatbot = () => {
     }, [messages]);
 
     return (
-        <div className="chat-container d-flex flex-column">
+        <div className={`chat-container d-flex flex-column ${chatbotState ? "open" : "closed"}`}>
             <div className='chat-header'></div>
             <div className="chat-messages" ref={chatContainerRef}>
                 {messages.map((msg, index) => (
