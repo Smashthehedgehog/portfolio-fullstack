@@ -2,9 +2,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const OpenAI = require('openai');
-const cors = require('cors')
-
-
+const cors = require('cors');
+const fs = require('fs');
 
 require('dotenv').config();
 
@@ -23,7 +22,13 @@ const client = new OpenAI({
 // In-memory store for conversations
 const conversations = {};
 conversations['user'] = [];
-conversations['user'].push({ role: 'system', content: "You are an assistant who wants to find the One Piece. You love One Piece. You only talk about One Piece." });
+
+fs.readFile('mike_prompt.txt', (err, data) => {
+    if (err)
+        throw err;
+    const mike_prompt = data.toString();
+    conversations['user'].push({ role: 'system', content: mike_prompt });
+});
 
 // Define a POST route for the chatbot
 app.post('/chat', async (req, res) => {
