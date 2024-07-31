@@ -12,7 +12,7 @@ applications:
                         - npm run build
                         - ls
             artifacts:
-                baseDirectory: /build
+                baseDirectory: ./frontend/build
                 files:
                     - '**/*'
             cache:
