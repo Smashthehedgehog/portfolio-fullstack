@@ -17,20 +17,4 @@ applications:
                     - '**/*'
             cache:
                 paths: frontend/node_modules/**/*
-        backend:
-            phases:
-                preBuild:
-                  commands:
-                    - cd backend
-                    - npm install
-                build:
-                  commands:
-                    - node server.js
-            artifacts:
-                baseDirectory: ./backend
-                files:
-                  - '**/*'
-            cache:
-                paths:
-                  - backend/node_modules/**/*
         appRoot: .
