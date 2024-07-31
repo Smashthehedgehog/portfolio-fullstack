@@ -10,7 +10,6 @@ applications:
                 build:
                     commands: 
                         - npm run build
-                        - ls
             artifacts:
                 baseDirectory: /build
                 files:
