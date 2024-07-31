@@ -8,9 +8,11 @@ applications:
                         - cd frontend
                         - npm install
                 build:
-                    commands: npm run build
+                    commands: 
+                        - npm run build
+                        - ls
             artifacts:
-                baseDirectory: /frontend/build
+                baseDirectory: /build
                 files:
                     - '**/*'
             cache:
