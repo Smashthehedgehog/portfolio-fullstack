@@ -10,7 +10,7 @@ applications:
                 build:
                     commands: npm run build
             artifacts:
-                baseDirectory: frontend/src/build
+                baseDirectory: /frontend/build
                 files:
                     - '**/*'
             cache:
