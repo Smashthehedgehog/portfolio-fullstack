@@ -36,7 +36,7 @@ const Hobbies = () => {
                 seen people create, and never looked back. For the past 4 years &#40;though on and off&#41; I've been notating sheet music from
                 songs in a concert band arrangement. Here are some examples of what I've done. </p>
                 <div className="justify-content-center d-flex">
-                    <div className="sonic-card mb-4">
+                    <div className="sonic-card-no-link mb-4">
                         <CarouselSlide imageURLs={musescore_image_set} />
                     </div>
                 </div>
@@ -58,7 +58,7 @@ const Hobbies = () => {
                     games worth their own weight. Here is a slideshow of some of my favorite video games of all time!
                 </p>
                 <div className="justify-content-center d-flex">
-                    <div className="sonic-card mb-4">
+                    <div className="sonic-card-no-link mb-4">
                         <CarouselSlide imageURLs={videogame_image_set} />
                     </div>
                 </div>
@@ -66,7 +66,7 @@ const Hobbies = () => {
                     just sandbox video games. As such, I've been playing through many of those type of games. Currently, this is the video game I'm on:
                 </p>
                 <div className="justify-content-center d-flex">
-                    <div className="sonic-card w-75 mb-4">
+                    <div className="sonic-card-no-link w-75 mb-4">
                         <img src={trails_of_cold_steel_two} className="object-fit-cover w-100 h-100 d-block"/>
                     </div>
                 </div>
