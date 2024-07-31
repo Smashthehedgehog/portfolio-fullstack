@@ -30,7 +30,7 @@ applications:
                 baseDirectory: ./backend
                 files:
                   - '**/*'
-              cache:
+            cache:
                 paths:
                   - backend/node_modules/**/*
         appRoot: .
