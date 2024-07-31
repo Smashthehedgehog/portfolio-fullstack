@@ -10,7 +10,7 @@ import videogames_tales from '../pictures/videogames_tales.jpg';
 import videogames_ys from '../pictures/videogames_ys.jpg';
 import videogames_mandl from '../pictures/videogames_mandl.jpg';
 import videogames_zelda from '../pictures/videogames_zelda.jpg';
-import tales_of_xillia from '../pictures/tales_of_xillia.jpg';
+import trails_of_cold_steel_two from '../pictures/trails_of_cold_steel_two.jpg';
 
 const musescore_image_set = [musescore_ego, musescore_goodbye, musescore_liveyourlife];
 const videogame_image_set = [videogames_sonic, videogames_xenoblade, videogames_ssbb, videogames_tales, videogames_zelda, videogames_ys, videogames_mandl];
@@ -53,8 +53,9 @@ const Hobbies = () => {
                 <p>Throughout my life, I've played many, and I mean many, video games. From the ones you would expect like
                     2K and Madden, to obscure, unheard of ones like Xenoblade Chronicles X. As I mentioned before, I basically came out 
                     the womb on Sonic Heroes, so my first video game system was a GameCube. Since then, I've owned a Gameboy, a Playstation, 
-                    a Nintendo DS, Wii, 3DS, Wii U, Xbox One, and a Switch. Along the line, I've played on other systems as well, only broading
-                    the type of games I have made. Here is a slideshow of some of my favorite video games of all time!
+                    a Nintendo DS, Wii, 3DS, Wii U, Xbox One, and a Switch. Along the line, I've played on other systems as well, playing more
+                    and more games along the way. My favorite one always swaps between Sonic Unleashed and Xenoblade Chronicles 2, as those are fantastic
+                    games worth their own weight. Here is a slideshow of some of my favorite video games of all time!
                 </p>
                 <div className="justify-content-center d-flex">
                     <div className="sonic-card mb-4">
@@ -62,11 +63,11 @@ const Hobbies = () => {
                     </div>
                 </div>
                 <p>If there is a certain type of games I really like, those are story-based video games, or ones with a beginning and an end more than
-                    just sandbox video games. As such, I've been playing through many of those type of games. This is the game that I'm currently playing:
+                    just sandbox video games. As such, I've been playing through many of those type of games. Currently, this is the video game I'm on:
                 </p>
                 <div className="justify-content-center d-flex">
                     <div className="sonic-card w-75 mb-4">
-                        <img src={tales_of_xillia} className="object-fit-cover w-100 h-100 d-block"/>
+                        <img src={trails_of_cold_steel_two} className="object-fit-cover w-100 h-100 d-block"/>
                     </div>
                 </div>
             </div>
