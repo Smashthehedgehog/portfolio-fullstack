@@ -5,7 +5,7 @@ import './fonts.css';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 import Sidebar from './components/sidebar/Sidebar';
-import Chatbot from './components/chatbot/chatbot';
+import Chatbot from './components/chatbot/Chatbot';
 import ChatbotIcon from './components/chatbot/ChatbotIcon';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import Home from './pages/Home';
