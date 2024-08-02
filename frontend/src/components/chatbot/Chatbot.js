@@ -15,7 +15,7 @@ const Chatbot = ({ chatbotState }) => {
         try {
             const inputtedMessage = input;
             setInput('');
-            const response = await axios.post('http://localhost:5000/chat', { sender: 'user', message: inputtedMessage });
+            const response = await axios.post('https://u7uk2ych80.execute-api.us-east-1.amazonaws.com/chat', { sender: 'user', message: inputtedMessage });
             setMessages(prevMessages => [
                 ...prevMessages,
                 { sender: 'assistant', text: response.data.reply }
