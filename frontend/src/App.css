@@ -1,3 +1,66 @@
+/* Sidebar styles */
+.sidebar-column {
+  width: 250px;
+  height: 100vh;
+  position: sticky;
+  top: 0;
+  transition: transform 0.3s ease;
+}
+
+@media screen and (max-width: 767px) {
+  .sidebar-column {
+    display: none; /* Sidebar hidden by default */
+  }
+
+  .sidebar-visible {
+    display: block;
+    position: fixed;
+    z-index: 1000;
+    transform: translateX(0); /* Slide-in */
+  }
+
+  .sidebar-hidden {
+    transform: translateX(-100%); /* Slide-out */
+  }
+
+  /* Overlay for darkening the background */
+  .overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5); /* Dark semi-transparent overlay */
+    z-index: 999; /* Below the sidebar */
+    transition: opacity 0.3s ease;
+    opacity: 0;
+    pointer-events: none; /* Prevent clicks when invisible */
+  }
+
+  /* Show overlay when sidebar is visible */
+  .overlay-visible {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+
+/* Sidebar toggle button */
+.sidebar-toggle {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background-color: #3061e3;
+  color: white;
+  padding: 10px;
+  border: none;
+  cursor: pointer;
+  z-index: 1001;
+}
+
+.sidebar-toggle:focus {
+  outline: none;
+}
+
 @media screen and (max-width: 767px) {
   [data-aos] {
     pointer-events: auto !important;
@@ -8,6 +71,7 @@
 
 .fit-content {
   min-width: fit-content;
+  min-height: 100vh;
 }
 
 .sidebar-layout {

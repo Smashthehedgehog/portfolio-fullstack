@@ -27,9 +27,14 @@ function App() {
   });
 
   const [chatbotState, setChatbotState] = useState(false);
+  const [sidebarVisible, setSidebarVisible] = useState(false); // Track sidebar visibility
 
   function toggleChatbot() {
     setChatbotState(!chatbotState);
+  }
+
+  function toggleSidebar() {
+    setSidebarVisible(!sidebarVisible);
   }
 
   return (
@@ -37,7 +42,14 @@ function App() {
       <div className="sonic-beige fit-content">
         <div className="sidebar-layout d-flex">
           { /* Sidebar */}
-          <SidebarColumn /> {/* Make this sidebar not show but contractable if the screen is mobile length */}
+          <div className={sidebarVisible ? "sidebar-column sidebar-visible" : "sidebar-column"}>
+            <SidebarColumn />
+          </div>
+
+          {/* Toggle button for mobile view */}
+          <button className="sidebar-toggle" onClick={toggleSidebar}>
+            {sidebarVisible ? "Close Sidebar" : "Open Sidebar"}
+          </button>
 
           { /* Content */}
           <div className="App-content d-flex flex-column">
