@@ -10,7 +10,7 @@ import videogames_tales from '../pictures/videogames_tales.jpg';
 import videogames_ys from '../pictures/videogames_ys.jpg';
 import videogames_mandl from '../pictures/videogames_mandl.jpg';
 import videogames_zelda from '../pictures/videogames_zelda.jpg';
-import trails_of_cold_steel_two from '../pictures/trails_of_cold_steel_two.jpg';
+import xenoblade_chronicles_de from '../pictures/xenoblade_chronicles_de.jpg';
 
 const musescore_image_set = [musescore_ego, musescore_goodbye, musescore_liveyourlife];
 const videogame_image_set = [videogames_sonic, videogames_xenoblade, videogames_ssbb, videogames_tales, videogames_zelda, videogames_ys, videogames_mandl];
@@ -67,7 +67,7 @@ const Hobbies = () => {
                 </p>
                 <div className="justify-content-center d-flex">
                     <div className="sonic-card-no-link w-75 mb-4">
-                        <img src={trails_of_cold_steel_two} className="object-fit-cover w-100 h-100 d-block"/>
+                        <img src={xenoblade_chronicles_de} className="object-fit-cover w-100 h-100 d-block"/>
                     </div>
                 </div>
             </div>
