@@ -7,12 +7,21 @@
   transition: transform 0.3s ease;
 }
 
+.sidebar-toggle {
+  display: none; /* Sidebar button hidden by default */
+}
+
 @media screen and (max-width: 767px) {
   .sidebar-column {
     display: none; /* Sidebar hidden by default */
   }
 
+  .sidebar-toggle {
+    display: block; /* Sidebar button hidden by default */
+  }
+
   .sidebar-visible {
+    background-color: #ffd78f;
     display: block;
     position: fixed;
     z-index: 1000;
@@ -30,7 +39,7 @@
     left: 0;
     width: 100vw;
     height: 100vh;
-    background-color: rgba(0, 0, 0, 0.5); /* Dark semi-transparent overlay */
+    background-color: rgba(0, 0, 0, 0.8); /* Dark semi-transparent overlay */
     z-index: 999; /* Below the sidebar */
     transition: opacity 0.3s ease;
     opacity: 0;

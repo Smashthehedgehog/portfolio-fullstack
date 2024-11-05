@@ -40,6 +40,9 @@ function App() {
   return (
     <Router>
       <div className="sonic-beige fit-content">
+        {/* Dark overlay for the background when the sidebar is open */}
+        <div className={sidebarVisible ? "overlay overlay-visible" : "overlay"} onClick={toggleSidebar}></div>
+        
         <div className="sidebar-layout d-flex">
           { /* Sidebar */}
           <div className={sidebarVisible ? "sidebar-column sidebar-visible" : "sidebar-column"}>
