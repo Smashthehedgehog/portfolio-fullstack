@@ -7,7 +7,7 @@ import musescore_liveyourlife from '../pictures/musescore_liveyourlife.jpg';
 
 const musescore_image_set = [musescore_ego, musescore_goodbye, musescore_liveyourlife];
 
-const API_BASE = process.env.REACT_APP_API_BASE || 'https://www.michaelani.com';
+const API_BASE = process.env.REACT_APP_API_BASE || 'https://u7uk2ych80.execute-api.us-east-1.amazonaws.com';
 
 const Hobbies = () => {
     const [completedGames, setCompletedGames] = useState([]);
