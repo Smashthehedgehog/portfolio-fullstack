@@ -42,8 +42,8 @@ export default function CarouselSlide({ imageURLs }) {
 
             <div className="image-index-buttons-container d-flex position-absolute">
                 {imageURLs.map((_, index) => (
-                    <button className="image-index-buttons" onClick={() => setImageIndex(index)}>
-                        {index === imageIndex ? <i class="bi-circle-fill"></i> : <i class="bi-circle"></i>}
+                    <button key={index} className="image-index-buttons" onClick={() => setImageIndex(index)}>
+                        {index === imageIndex ? <i className="bi-circle-fill"></i> : <i className="bi-circle"></i>}
                     </button>
                 ))}
             </div>

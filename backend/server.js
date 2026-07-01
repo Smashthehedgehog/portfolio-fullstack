@@ -25,6 +25,13 @@ const client = new OpenAI({
 const conversations = {};
 conversations['user'] = [];
 
+// In-memory cache for Backloggd game covers
+const backloggdCache = { completed: [], playing: [], lastFetched: null };
+const CACHE_TTL_MS = 60 * 60 * 1000; // 1 hour
+
+const BACKLOGGD_PLAYING_URL = 'https://backloggd.com/u/BigMike62/games/added/type:playing/';
+const BACKLOGGD_PLAYED_URL  = 'https://backloggd.com/u/BigMike62/games/added/type:played/';
+
 // Function to fetch website content using Puppeteer
 const fetchWebsiteContent = async (url) => {
     try {
@@ -55,13 +62,51 @@ const initializeWebsiteContent = async () => {
     }
 };
 
+const scrapeBackloggdGames = async (url) => {
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+    await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36');
+    await page.goto(url, { waitUntil: 'networkidle0', timeout: 30000 });
+    const urls = await page.evaluate(() =>
+        Array.from(document.querySelectorAll('img.card-img'))
+            .map(img => img.src)
+            .filter(src => src && !src.includes('no_avatar'))
+    );
+    await browser.close();
+    return urls;
+};
+
+const shuffle = (arr) => {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+};
+
+const initializeBackloggdGames = async () => {
+    try {
+        const [played, playing] = await Promise.all([
+            scrapeBackloggdGames(BACKLOGGD_PLAYED_URL),
+            scrapeBackloggdGames(BACKLOGGD_PLAYING_URL),
+        ]);
+        backloggdCache.completed = shuffle(played).slice(0, 10);
+        backloggdCache.playing   = playing;
+        backloggdCache.lastFetched = Date.now();
+        console.log(`Backloggd: ${backloggdCache.completed.length} completed, ${backloggdCache.playing.length} playing`);
+    } catch (error) {
+        console.error(`Error fetching Backloggd games: ${error.message}`);
+    }
+};
+
 fs.readFile('mike_prompt.txt', async (err, data) => {
     if (err)
         throw err;
     const mike_prompt = data.toString();
     conversations['user'].push({ role: 'system', content: mike_prompt });
 
-    await initializeWebsiteContent();
+    await Promise.all([initializeWebsiteContent(), initializeBackloggdGames()]);
 });
 
 // Define a POST route for the chatbot
@@ -93,6 +138,14 @@ app.post('/chat', async (req, res) => {
         // Handle any errors that occur
         res.status(500).json({ error: error.message });
     }
+});
+
+app.get('/backloggd-games', async (req, res) => {
+    const cacheStale = !backloggdCache.lastFetched || (Date.now() - backloggdCache.lastFetched > CACHE_TTL_MS);
+    if (cacheStale) {
+        await initializeBackloggdGames();
+    }
+    res.json({ completed: backloggdCache.completed, playing: backloggdCache.playing });
 });
 
 app.listen(5000, () => {
