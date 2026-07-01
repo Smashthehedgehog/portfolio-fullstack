@@ -39,13 +39,13 @@ const Writing_TheRoughDraftOfTheWebsite = () => {
             <div className='d-flex justify-content-between gap-4 mb-2'>
                 <div className='d-flex flex-column align-items-center'>
                     <div className='picture-square d-flex align-items-center justify-content-center p-2 mb-1'>
-                        <img src={pic1} className='h-100'/>
+                        <img src={pic1} className='h-100' alt="Focus style example - expected" />
                     </div>
                     <span className='text-center newspaper-legal w-75'>This is how the focus is supposed to look</span>
                 </div>
                 <div className='d-flex flex-column align-items-center'>
                     <div className='picture-square d-flex align-items-center justify-content-center p-2 mb-1'>
-                        <img src={pic2} className='h-100'/>
+                        <img src={pic2} className='h-100' alt="Focus style example - current behaviour" />
                     </div>
                     <span className='text-center newspaper-legal w-75'>Currently, this is how the focus looks on children</span>
                 </div>
