@@ -5,6 +5,7 @@ import Groq from 'groq-sdk';
 import cors from 'cors';
 import puppeteer from 'puppeteer';
 import dotenv from 'dotenv';
+import fs from 'fs';
 
 dotenv.config();
 
@@ -26,7 +27,30 @@ conversations['user'] = [];
 
 // In-memory cache for Backloggd game covers
 const backloggdCache = { completed: [], playing: [], lastFetched: null };
-const CACHE_TTL_MS = 60 * 60 * 1000; // 1 hour
+const CACHE_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
+const CACHE_FILE_PATH = new URL('./backloggd-cache.json', import.meta.url).pathname;
+
+const saveCacheToDisk = () => {
+    try {
+        fs.writeFileSync(CACHE_FILE_PATH, JSON.stringify(backloggdCache));
+    } catch (err) {
+        console.warn(`Could not write Backloggd cache to disk: ${err.message}`);
+    }
+};
+
+const loadCacheFromDisk = () => {
+    try {
+        if (!fs.existsSync(CACHE_FILE_PATH)) return false;
+        const data = JSON.parse(fs.readFileSync(CACHE_FILE_PATH, 'utf8'));
+        if (!data.lastFetched || Date.now() - data.lastFetched > CACHE_TTL_MS) return false;
+        Object.assign(backloggdCache, data);
+        console.log(`Backloggd: loaded from disk (${backloggdCache.completed.length} completed, ${backloggdCache.playing.length} playing)`);
+        return true;
+    } catch (err) {
+        console.warn(`Could not read Backloggd cache from disk: ${err.message}`);
+        return false;
+    }
+};
 
 const BACKLOGGD_PLAYING_URL = 'https://backloggd.com/u/BigMike62/games/added/type:playing/';
 const BACKLOGGD_PLAYED_URL  = 'https://backloggd.com/u/BigMike62/games/added/type:played/';
@@ -129,6 +153,7 @@ const initializeBackloggdGames = async () => {
         backloggdCache.playing   = playing;
         backloggdCache.lastFetched = Date.now();
         console.log(`Backloggd: ${backloggdCache.completed.length} completed, ${backloggdCache.playing.length} playing`);
+        saveCacheToDisk();
     } catch (error) {
         console.error(`Error fetching Backloggd games: ${error.message}`);
     }
@@ -148,7 +173,12 @@ Michael's nickname is Mike. Many people call him Big Mike.
 Michael is a huge Sonic fan.`;
 
 conversations['user'].push({ role: 'system', content: mike_prompt });
-await Promise.all([initializeWebsiteContent(), initializeBackloggdGames()]);
+const backloggdFromDisk = loadCacheFromDisk();
+await Promise.all([
+    initializeWebsiteContent(),
+    backloggdFromDisk ? Promise.resolve() : initializeBackloggdGames(),
+]);
+setInterval(initializeBackloggdGames, CACHE_TTL_MS);
 
 // Define a POST route for the chatbot
 app.post('/chat', async (req, res) => {
