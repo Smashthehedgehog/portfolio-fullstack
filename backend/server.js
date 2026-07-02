@@ -32,7 +32,7 @@ const BACKLOGGD_PLAYING_URL = 'https://backloggd.com/u/BigMike62/games/added/typ
 const BACKLOGGD_PLAYED_URL  = 'https://backloggd.com/u/BigMike62/games/added/type:played/';
 
 const USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36';
-const PUPPETEER_LAUNCH_OPTS = { args: ['--no-sandbox', '--disable-setuid-sandbox'] };
+const PUPPETEER_LAUNCH_OPTS = { args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage', '--disable-gpu'] };
 
 // Crawl the portfolio site with one browser, discovering pages dynamically.
 // Returns an array of { url, text } for every internal page found (up to maxPages).
