@@ -1,4 +1,3 @@
-// Import the required libraries
 import express from 'express';
 import bodyParser from 'body-parser';
 import Groq from 'groq-sdk';
@@ -6,9 +5,12 @@ import cors from 'cors';
 import puppeteer from 'puppeteer';
 import dotenv from 'dotenv';
 import fs from 'fs';
-import { load as cheerioLoad } from 'cheerio';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
 
 dotenv.config();
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 // Initialize the Express application
 const app = express();
@@ -26,35 +28,22 @@ const client = new Groq({
 const conversations = {};
 conversations['user'] = [];
 
-// In-memory cache for Backloggd game covers
-const backloggdCache = { completed: [], playing: [], lastFetched: null };
-const CACHE_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
-const CACHE_FILE_PATH = new URL('./backloggd-cache.json', import.meta.url).pathname;
-
-const saveCacheToDisk = () => {
-    try {
-        fs.writeFileSync(CACHE_FILE_PATH, JSON.stringify(backloggdCache));
-    } catch (err) {
-        console.warn(`Could not write Backloggd cache to disk: ${err.message}`);
+// Load Backloggd game covers from committed games.json (updated by GitHub Actions daily)
+const shuffle = (arr) => {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
     }
+    return a;
 };
 
-const loadCacheFromDisk = () => {
-    try {
-        if (!fs.existsSync(CACHE_FILE_PATH)) return false;
-        const data = JSON.parse(fs.readFileSync(CACHE_FILE_PATH, 'utf8'));
-        if (!data.lastFetched || Date.now() - data.lastFetched > CACHE_TTL_MS) return false;
-        Object.assign(backloggdCache, data);
-        console.log(`Backloggd: loaded from disk (${backloggdCache.completed.length} completed, ${backloggdCache.playing.length} playing)`);
-        return true;
-    } catch (err) {
-        console.warn(`Could not read Backloggd cache from disk: ${err.message}`);
-        return false;
-    }
+const gamesData = JSON.parse(fs.readFileSync(join(__dirname, 'games.json'), 'utf8'));
+const backloggdGames = {
+    completed: shuffle(gamesData.completed).slice(0, 10),
+    playing: gamesData.playing,
 };
-
-const BACKLOGGD_PLAYING_URL = 'https://backloggd.com/u/BigMike62/games/added/type:playing/';
-const BACKLOGGD_PLAYED_URL  = 'https://backloggd.com/u/BigMike62/games/added/type:played/';
+console.log(`Backloggd: ${backloggdGames.completed.length} completed, ${backloggdGames.playing.length} playing (from games.json)`);
 
 const USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36';
 const PUPPETEER_LAUNCH_OPTS = { args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage', '--disable-gpu'] };
@@ -121,40 +110,6 @@ const initializeWebsiteContent = async () => {
     }
 };
 
-const scrapeBackloggdGames = async (url) => {
-    const res = await fetch(url, { headers: { 'User-Agent': USER_AGENT } });
-    const $ = cheerioLoad(await res.text());
-    return $('img.card-img')
-        .map((_, el) => $(el).attr('src'))
-        .get()
-        .filter(src => src && !src.includes('no_avatar'));
-};
-
-const shuffle = (arr) => {
-    const a = [...arr];
-    for (let i = a.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [a[i], a[j]] = [a[j], a[i]];
-    }
-    return a;
-};
-
-const initializeBackloggdGames = async () => {
-    try {
-        const [played, playing] = await Promise.all([
-            scrapeBackloggdGames(BACKLOGGD_PLAYED_URL),
-            scrapeBackloggdGames(BACKLOGGD_PLAYING_URL),
-        ]);
-        backloggdCache.completed = shuffle(played).slice(0, 10);
-        backloggdCache.playing   = playing;
-        backloggdCache.lastFetched = Date.now();
-        console.log(`Backloggd: ${backloggdCache.completed.length} completed, ${backloggdCache.playing.length} playing`);
-        saveCacheToDisk();
-    } catch (error) {
-        console.error(`Error fetching Backloggd games: ${error.message}`);
-    }
-};
-
 const mike_prompt = `You are a robot named Metal Smash. You add a lot of BZZZZZZT and KSHHHHHH in your sentences. You also speak in all caps. However, you likes to make jokes, loves to have fun, and strives to offer the best service possible.
 You also like to keep things concise. No response should be longer than 50 words.
 
@@ -169,23 +124,18 @@ Michael's nickname is Mike. Many people call him Big Mike.
 Michael is a huge Sonic fan.`;
 
 conversations['user'].push({ role: 'system', content: mike_prompt });
-const backloggdFromDisk = loadCacheFromDisk();
-await Promise.all([
-    initializeWebsiteContent(),
-    backloggdFromDisk ? Promise.resolve() : initializeBackloggdGames(),
-]);
-setInterval(initializeBackloggdGames, CACHE_TTL_MS);
+await initializeWebsiteContent();
 
 // Define a POST route for the chatbot
 app.post('/chat', async (req, res) => {
     const { sender, message } = req.body; // Extract the message from the request body
-    
+
     if (!sender || !message) {
         return res.status(400).json({ error: 'User ID and message are required' });
     }
-    
+
     conversations[sender].push({ role: 'user', content: message });
-    
+
     try {
         // Send the message to OpenAI and get the response
         const response = await client.chat.completions.create({
@@ -207,12 +157,8 @@ app.post('/chat', async (req, res) => {
     }
 });
 
-app.get('/backloggd-games', async (req, res) => {
-    const cacheStale = !backloggdCache.lastFetched || (Date.now() - backloggdCache.lastFetched > CACHE_TTL_MS);
-    if (cacheStale) {
-        await initializeBackloggdGames();
-    }
-    res.json({ completed: backloggdCache.completed, playing: backloggdCache.playing });
+app.get('/backloggd-games', (req, res) => {
+    res.json(backloggdGames);
 });
 
 app.listen(5000, () => {
