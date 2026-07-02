@@ -6,6 +6,7 @@ import cors from 'cors';
 import puppeteer from 'puppeteer';
 import dotenv from 'dotenv';
 import fs from 'fs';
+import { load as cheerioLoad } from 'cheerio';
 
 dotenv.config();
 
@@ -121,17 +122,12 @@ const initializeWebsiteContent = async () => {
 };
 
 const scrapeBackloggdGames = async (url) => {
-    const browser = await puppeteer.launch(PUPPETEER_LAUNCH_OPTS);
-    const page = await browser.newPage();
-    await page.setUserAgent(USER_AGENT);
-    await page.goto(url, { waitUntil: 'networkidle0', timeout: 30000 });
-    const urls = await page.evaluate(() =>
-        Array.from(document.querySelectorAll('img.card-img'))
-            .map(img => img.src)
-            .filter(src => src && !src.includes('no_avatar'))
-    );
-    await browser.close();
-    return urls;
+    const res = await fetch(url, { headers: { 'User-Agent': USER_AGENT } });
+    const $ = cheerioLoad(await res.text());
+    return $('img.card-img')
+        .map((_, el) => $(el).attr('src'))
+        .get()
+        .filter(src => src && !src.includes('no_avatar'));
 };
 
 const shuffle = (arr) => {
