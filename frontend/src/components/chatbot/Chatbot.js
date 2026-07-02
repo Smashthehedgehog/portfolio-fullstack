@@ -15,7 +15,7 @@ const Chatbot = ({ chatbotState }) => {
         try {
             const inputtedMessage = input;
             setInput('');
-            const response = await axios.post('https://u7uk2ych80.execute-api.us-east-1.amazonaws.com/chat', { sender: 'user', message: inputtedMessage });
+            const response = await axios.post(`${process.env.REACT_APP_API_BASE}/chat`, { sender: 'user', message: inputtedMessage });
             setMessages(prevMessages => [
                 ...prevMessages,
                 { sender: 'assistant', text: response.data.reply }
@@ -53,7 +53,7 @@ const Chatbot = ({ chatbotState }) => {
                     placeholder="Ask about me!"
                 />
                 <button tabIndex='0' className="send-button d-flex align-items-center justify-content-center" onClick={handleSend}>
-                    <i class="bi bi-send"></i>
+                    <i className="bi bi-send"></i>
                 </button>
             </div>
         </div>

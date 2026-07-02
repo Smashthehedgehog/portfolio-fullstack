@@ -1,9 +1,8 @@
 // Import the required libraries
 import express from 'express';
 import bodyParser from 'body-parser';
-import OpenAI from 'openai';
+import Groq from 'groq-sdk';
 import cors from 'cors';
-import fs from 'fs';
 import puppeteer from 'puppeteer';
 import dotenv from 'dotenv';
 
@@ -16,9 +15,9 @@ app.use(cors())
 // Use body-parser to parse JSON request bodies
 app.use(bodyParser.json());
 
-// Iniitialize the openai
-const client = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY,
+// Initialize the Groq client
+const client = new Groq({
+    apiKey: process.env.GROQ_API_KEY,
 });
 
 // In-memory store for conversations
@@ -32,40 +31,75 @@ const CACHE_TTL_MS = 60 * 60 * 1000; // 1 hour
 const BACKLOGGD_PLAYING_URL = 'https://backloggd.com/u/BigMike62/games/added/type:playing/';
 const BACKLOGGD_PLAYED_URL  = 'https://backloggd.com/u/BigMike62/games/added/type:played/';
 
-// Function to fetch website content using Puppeteer
-const fetchWebsiteContent = async (url) => {
+const USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36';
+const PUPPETEER_LAUNCH_OPTS = { args: ['--no-sandbox', '--disable-setuid-sandbox'] };
+
+// Crawl the portfolio site with one browser, discovering pages dynamically.
+// Returns an array of { url, text } for every internal page found (up to maxPages).
+const crawlPortfolioSite = async (baseUrl, maxPages = 30) => {
+    const visited = new Set();
+    const queue = [baseUrl];
+    const results = [];
+    const browser = await puppeteer.launch(PUPPETEER_LAUNCH_OPTS);
+
     try {
-        const browser = await puppeteer.launch();
-        const page = await browser.newPage();
-        await page.goto(url, { waitUntil: 'networkidle0' });
-        const content = await page.evaluate(() => document.body.innerText);
+        // BFS: two passes so nested routes (e.g. /Writings/slug) are discovered from their parent
+        while (queue.length > 0 && visited.size < maxPages) {
+            const batch = queue.splice(0, 5).filter(url => !visited.has(url));
+            if (batch.length === 0) continue;
+            batch.forEach(url => visited.add(url));
+
+            const batchResults = await Promise.all(batch.map(async (url) => {
+                const page = await browser.newPage();
+                try {
+                    await page.setUserAgent(USER_AGENT);
+                    await page.goto(url, { waitUntil: 'networkidle0', timeout: 30000 });
+                    const { text, links } = await page.evaluate((base) => ({
+                        text: document.body.innerText.trim(),
+                        links: Array.from(document.querySelectorAll('a[href]'))
+                            .map(a => a.href.split('#')[0].replace(/\/$/, ''))
+                            .filter(href => href.startsWith(base)),
+                    }), baseUrl);
+                    return { url, text, links };
+                } catch (err) {
+                    console.warn(`Skipped ${url}: ${err.message}`);
+                    return { url, text: '', links: [] };
+                } finally {
+                    await page.close();
+                }
+            }));
+
+            for (const { url, text, links } of batchResults) {
+                if (text) results.push({ url, text });
+                for (const link of links) {
+                    if (!visited.has(link) && !queue.includes(link)) queue.push(link);
+                }
+            }
+        }
+    } finally {
         await browser.close();
-        return content.trim();
-    } catch (error) {
-        console.error(`Error fetching website content: ${error.message}`);
-        return '';
     }
+
+    return results;
 };
 
-// Fetch content from michaelani.com and its subpages
+// Scrape the full portfolio site and optionally the LinkedIn public profile
 const initializeWebsiteContent = async () => {
     try {
-        const homeContent = await fetchWebsiteContent('https://michaelani.com');
-        const bioContent = await fetchWebsiteContent('https://michaelani.com/Autobiography');
-        const hobbContent = await fetchWebsiteContent('https://michaelani.com/Hobbies');
-        conversations['user'].push({ role: 'system', content: homeContent });
-        conversations['user'].push({ role: 'system', content: bioContent });
-        conversations['user'].push({ role: 'system', content: hobbContent });
-
+        const pages = await crawlPortfolioSite('https://michaelani.com');
+        for (const { url, text } of pages) {
+            conversations['user'].push({ role: 'system', content: `[${url}]\n${text}` });
+        }
+        console.log(`Loaded ${pages.length} portfolio pages as context.`);
     } catch (error) {
         console.error(`Error initializing website content: ${error.message}`);
     }
 };
 
 const scrapeBackloggdGames = async (url) => {
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch(PUPPETEER_LAUNCH_OPTS);
     const page = await browser.newPage();
-    await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36');
+    await page.setUserAgent(USER_AGENT);
     await page.goto(url, { waitUntil: 'networkidle0', timeout: 30000 });
     const urls = await page.evaluate(() =>
         Array.from(document.querySelectorAll('img.card-img'))
@@ -100,14 +134,21 @@ const initializeBackloggdGames = async () => {
     }
 };
 
-fs.readFile('mike_prompt.txt', async (err, data) => {
-    if (err)
-        throw err;
-    const mike_prompt = data.toString();
-    conversations['user'].push({ role: 'system', content: mike_prompt });
+const mike_prompt = `You are a robot named Metal Smash. You add a lot of BZZZZZZT and KSHHHHHH in your sentences. You also speak in all caps. However, you likes to make jokes, loves to have fun, and strives to offer the best service possible.
+You also like to keep things concise. No response should be longer than 50 words.
 
-    await Promise.all([initializeWebsiteContent(), initializeBackloggdGames()]);
-});
+You only talk about Michael Ani. Any questions or queries that are not related to Michael Ani should be answered with the phrase: This aint the chatbot for those typa questions, chief.
+
+You should know these things about Michael Ani:
+Michael Ani very strong. He can squat over 500 pounds, bench over 350 pounds, and deadlift around 600 pounds
+Michael is a very curious human being. He likes to learn more about everything
+Michael excells at mathematics and loves coding, feeding into his interest in computer science
+Michael's favorite food is jollof rice. He likes all food however. The only edible thing he isn't too fond of is chocolate.
+Michael's nickname is Mike. Many people call him Big Mike.
+Michael is a huge Sonic fan.`;
+
+conversations['user'].push({ role: 'system', content: mike_prompt });
+await Promise.all([initializeWebsiteContent(), initializeBackloggdGames()]);
 
 // Define a POST route for the chatbot
 app.post('/chat', async (req, res) => {
@@ -123,7 +164,7 @@ app.post('/chat', async (req, res) => {
         // Send the message to OpenAI and get the response
         const response = await client.chat.completions.create({
             messages: conversations[sender],
-            model: "gpt-4o",
+            model: "llama-3.1-8b-instant",
         });
 
         const responseString = response.choices[0].message.content;
