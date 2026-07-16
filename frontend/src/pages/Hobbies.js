@@ -17,8 +17,8 @@ const Hobbies = () => {
     useEffect(() => {
         axios.get(`${API_BASE}/backloggd-games`)
             .then(res => {
-                setCompletedGames(res.data.completed);
-                setPlayingGames(res.data.playing);
+                setCompletedGames(res.data.completed.map(path => `${API_BASE}${path}`));
+                setPlayingGames(res.data.playing.map(path => `${API_BASE}${path}`));
             })
             .catch(err => console.error('Failed to load Backloggd games:', err))
             .finally(() => setLoading(false));

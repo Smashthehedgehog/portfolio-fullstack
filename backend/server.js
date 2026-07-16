@@ -15,6 +15,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 // Initialize the Express application
 const app = express();
 app.use(cors())
+app.use('/game-covers', express.static(join(__dirname, 'game-covers')));
 
 // Use body-parser to parse JSON request bodies
 app.use(bodyParser.json());
