@@ -1,36 +1,12 @@
 .site-footer {
     background-color: var(--c-text);
     color: var(--c-bg);
-    margin-top: 3rem;
 }
 
 .site-footer-inner {
     max-width: var(--content-max-width);
     margin: 0 auto;
-    padding: 2.5rem 1.5rem 1.5rem;
-}
-
-.site-footer-tagline {
-    color: var(--c-bg);
-    opacity: 0.8;
-    max-width: 24rem;
-}
-
-.site-footer-link {
-    color: var(--c-bg);
-    opacity: 0.8;
-    transition: opacity 0.2s ease;
-}
-
-.site-footer-link:hover {
-    opacity: 1;
-    color: var(--c-bg);
-}
-
-.site-footer-link:focus-visible {
-    outline: 2px solid var(--c-bg);
-    outline-offset: 2px;
-    border-radius: 2px;
+    padding: 2.5rem 1.5rem;
 }
 
 .site-footer-bottom {

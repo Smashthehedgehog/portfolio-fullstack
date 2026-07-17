@@ -2,6 +2,8 @@
 :root {
   /* Fixed brand background — DO NOT CHANGE */
   --c-bg: #ffd78f;
+  /* Slightly darker variant of --c-bg, navbar only */
+  --c-bg-navbar: #e6c281;
 
   /* Sonic primary/secondary accents */
   --c-blue: #3061e3;
