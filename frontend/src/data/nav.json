@@ -1,0 +1,8 @@
+[
+    { "title": "Home", "path": "/" },
+    { "title": "About Me", "path": "/about-me" },
+    { "title": "Hobbies", "path": "/hobbies" },
+    { "title": "Projects", "path": "/projects" },
+    { "title": "Articles", "path": "/articles" },
+    { "title": "My Resume", "path": "/resume" }
+]

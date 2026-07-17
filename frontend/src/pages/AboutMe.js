@@ -20,7 +20,7 @@ const image_set_3 = [peeps, mike_alpha, stepshow, grad];
 // NOTE: SPECIFY THAT POSITION IS RELATIVE IN PARENT DIV!!
 // D-FLEX DOES NOT AUTOMATICALLY MEAN POSITION RELATIVE
 
-const Autobiography = () => {
+const AboutMe = () => {
     return (
         <div className="App-content-stuff d-flex flex-column">
             <p data-aos="fade-left" className='display-3-large sonic-blue-text'>Early Days</p>
@@ -75,4 +75,4 @@ const Autobiography = () => {
     );
 };
  
-export default Autobiography;
+export default AboutMe;

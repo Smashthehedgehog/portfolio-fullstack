@@ -1,0 +1,37 @@
+/* theme.css — design tokens for the Sonic-inspired revamp */
+:root {
+  /* Fixed brand background — DO NOT CHANGE */
+  --c-bg: #ffd78f;
+
+  /* Sonic primary/secondary accents */
+  --c-blue: #3061e3;
+  --c-blue-dark: #1f45a8;
+  --c-red: #da2528;
+  --c-red-dark: #a91b1e;
+
+  /* Complementary tones, kept in the Sonic family */
+  --c-amber: #f19b00;
+  --c-mint: #00f19b;
+
+  /* Gradients, used sparingly for CTAs/accents */
+  --g-blue-red: linear-gradient(90deg, var(--c-blue) 0%, var(--c-red) 100%);
+  --g-amber-mint: linear-gradient(135deg, var(--c-amber) 0%, var(--c-mint) 100%);
+
+  /* Neutrals / text */
+  --c-text: #252525;
+  --c-text-inverse: #ffd78f;
+  --c-surface: #ffffff;
+  --c-surface-dark: #593900;
+  --c-border: #505050;
+
+  /* Elevation / interaction */
+  --shadow-card: 0px 8px 16px 0px rgba(0, 0, 0, 0.25);
+  --shadow-card-hover: 0px 8px 16px 0px rgba(0, 0, 0, 0.75);
+  --c-focus-ring: #000000;
+  --radius-card: 8px;
+  --radius-pill: 16px;
+
+  /* Layout */
+  --navbar-height: 4.5rem;
+  --content-max-width: 62rem;
+}
