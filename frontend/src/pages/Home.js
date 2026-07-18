@@ -1,4 +1,5 @@
 import React from 'react';
+import './Home.css';
 import michael_transparent_bw from '../pictures/michael_transparent_bw.png';
 
 

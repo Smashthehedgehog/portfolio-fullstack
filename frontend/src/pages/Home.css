@@ -1,0 +1,44 @@
+.header-container {
+  height: calc(100vh - var(--navbar-height));
+  width: 60%;
+}
+
+.hero-name-wrap {
+  display: inline-block;
+}
+
+.hero-name {
+  font-family: 'Nise Sega Sonic', 'Simply Cricket VF', Helvetica, Arial, sans-serif;
+  --sonic-outline: #24428C;
+  --sonic-fill-top: #FCB219;
+  --sonic-fill-bottom: #FCE605;
+  color: transparent;
+  background: linear-gradient(180deg, var(--sonic-fill-top) 0%, var(--sonic-fill-bottom) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  -webkit-text-stroke: 3px var(--sonic-outline);
+}
+
+.hero-bg-portrait-wrap {
+  position: absolute;
+  top: 0;
+  right: 5rem;
+  height: 100%;
+  width: auto;
+  transform: scale(1.25);
+  z-index: -1;
+  pointer-events: none;
+  filter: blur(2px);
+  opacity: 0.6;
+}
+
+
+.hero-bg-portrait {
+  height: 100%;
+  width: auto;
+  object-fit: contain;
+  object-position: right center;
+
+}

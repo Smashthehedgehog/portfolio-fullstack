@@ -12,7 +12,6 @@ import ChatbotIcon from './components/chatbot/ChatbotIcon';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import Home from './pages/Home';
 import AboutMe from './pages/AboutMe';
-import Hobbies from './pages/Hobbies';
 import Projects from './pages/Projects';
 import Articles from './pages/Articles';
 import Writing_TheRoughDraftOfTheWebsite from './pages/Writing_TheRoughDraftOfTheWebsite';
@@ -48,7 +47,6 @@ function App() {
                 <Route path={"/"} element={<Home />} />
                 <Route path={"/my-app"} element={<Home />} />
                 <Route path={"/about-me"} element={<AboutMe />} />
-                <Route path={"/hobbies"} element={<Hobbies />} />
                 <Route path={"/projects"} element={<Projects />} />
                 <Route path={"/articles"} element={<Articles />} />
                 <Route path={"/articles/the-rough-draft-of-the-website"} element={<Writing_TheRoughDraftOfTheWebsite />} />
@@ -57,7 +55,6 @@ function App() {
 
                 {/* legacy path redirects */}
                 <Route path={"/Autobiography"} element={<Navigate to="/about-me" replace />} />
-                <Route path={"/Hobbies"} element={<Navigate to="/hobbies" replace />} />
                 <Route path={"/Artifacts_And_Work"} element={<Navigate to="/projects" replace />} />
                 <Route path={"/Writings"} element={<Navigate to="/articles" replace />} />
                 <Route path={"/Writings/the-rough-draft-of-the-website"} element={<Navigate to="/articles/the-rough-draft-of-the-website" replace />} />

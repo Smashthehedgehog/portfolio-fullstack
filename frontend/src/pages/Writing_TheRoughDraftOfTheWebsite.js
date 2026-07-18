@@ -1,5 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom';
+import './Writing_TheRoughDraftOfTheWebsite.css';
 import pic1 from '../pictures/05_27_2024_1.JPG';
 import pic2 from '../pictures/05_27_2024_2.JPG';
 
