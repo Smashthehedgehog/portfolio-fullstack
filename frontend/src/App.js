@@ -1,19 +1,22 @@
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import React, { useState } from 'react';
+import './theme.css';
 import './App.css';
 import './fonts.css';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
-import SidebarColumn from './components/sidebar/SidebarColumn';
+import NavBar from './components/navbar/NavBar';
+import Footer from './components/footer/Footer';
 import Chatbot from './components/chatbot/Chatbot';
 import ChatbotIcon from './components/chatbot/ChatbotIcon';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import Home from './pages/Home';
-import Autobiography from './pages/Autobiography';
-import Hobbies from './pages/Hobbies';
-import Artifacts_And_Work from './pages/Artifacts_And_Work';
-import Writings from './pages/Writings';
-import Writing_TheRoughDraftOfTheWebsite from './pages/Writing_TheRoughDraftOfTheWebsite';
+import AboutMe from './pages/AboutMe';
+import Projects from './pages/Projects';
+import Articles from './pages/Articles';
+import ArticleDetail from './pages/ArticleDetail';
+import Resume from './pages/Resume';
+import Contact from './pages/Contact';
 
 
 
@@ -27,49 +30,39 @@ function App() {
   });
 
   const [chatbotState, setChatbotState] = useState(false);
-  const [sidebarVisible, setSidebarVisible] = useState(false); // Track sidebar visibility
 
   function toggleChatbot() {
     setChatbotState(!chatbotState);
   }
 
-  function toggleSidebar() {
-    setSidebarVisible(!sidebarVisible);
-  }
-
   return (
     <Router>
-      <div className="sonic-beige fit-content">
-        {/* Dark overlay for the background when the sidebar is open */}
-        <div className={sidebarVisible ? "overlay overlay-visible" : "overlay"} onClick={toggleSidebar}></div>
-        
-        <div className="sidebar-layout d-flex">
-          { /* Sidebar */}
-          <div className={sidebarVisible ? "sidebar-column sidebar-visible" : "sidebar-column"}>
-            <SidebarColumn />
-          </div>
+      <div className="sonic-beige fit-content d-flex flex-column">
+        <NavBar />
 
-          {/* Toggle button for mobile view */}
-          <button className="sidebar-toggle" onClick={toggleSidebar}>
-            {sidebarVisible ? "Close Sidebar" : "Open Sidebar"}
-          </button>
-
-          { /* Content */}
-          <div className="App-content d-flex flex-column">
-            {/* Main content */}
+        <div className="App-content d-flex flex-column">
+          <div className="site-content-inner">
             <div className='m-4'></div>
             <Routes>
-                <Route path={"/Autobiography"} element={<Autobiography />} />
-                <Route path={"/Hobbies"} element={<Hobbies />} />
-                <Route path={"/Artifacts_And_Work"} element={<Artifacts_And_Work />} />
-                <Route path={"/Writings"} element={<Writings />} />
-                <Route path={"/Writings/the-rough-draft-of-the-website"} element={<Writing_TheRoughDraftOfTheWebsite />} />
                 <Route path={"/"} element={<Home />} />
                 <Route path={"/my-app"} element={<Home />} />
-            </Routes>
+                <Route path={"/about-me"} element={<AboutMe />} />
+                <Route path={"/projects"} element={<Projects />} />
+                <Route path={"/articles"} element={<Articles />} />
+                <Route path={"/articles/:slug"} element={<ArticleDetail />} />
+                <Route path={"/resume"} element={<Resume />} />
+                <Route path={"/contact"} element={<Contact />} />
 
+                {/* legacy path redirects */}
+                <Route path={"/Autobiography"} element={<Navigate to="/about-me" replace />} />
+                <Route path={"/Artifacts_And_Work"} element={<Navigate to="/projects" replace />} />
+                <Route path={"/Writings"} element={<Navigate to="/articles" replace />} />
+                <Route path={"/Writings/the-rough-draft-of-the-website"} element={<Navigate to="/articles/the-rough-draft-of-the-website" replace />} />
+            </Routes>
           </div>
         </div>
+
+        <Footer />
         < Chatbot chatbotState={chatbotState}/>
         < ChatbotIcon chatbotState={chatbotState} toggleChatbot={toggleChatbot}/>
       </div>

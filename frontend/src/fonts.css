@@ -18,6 +18,11 @@
   font-family: 'Fe Fell';
   src: url('../fonts/FeFCsc2.ttf');
 }
+
+@font-face {
+  font-family: 'Nise Sega Sonic';
+  src: url('../fonts/NiseSegaSonic.TTF');
+}
   
   /*---------------------------------------------------------------
   --------------------------Typography-----------------------------
@@ -228,9 +233,10 @@
     font-family: 'Simply Cricket VF', Helvetica, Arial, sans-serif;
     font-style: normal;
     font-weight: 500;
-    font-size: 16px;
+    font-size: 18px;
     line-height: 24px;
     letter-spacing: 0.5px;
+    color: #000000;
   }
 
   .subhead-1-small {
@@ -303,33 +309,3 @@
   }
 
 /* sourceMappingURL=cricketFontsCSS.5f991ad743e0a025a799.css.map */
-
-
-/* --------------------------------------------------
------------------- Newspaper Styles -----------------
------------------------------------------------------ */
-
-.newspaper-title {
-    font-family: 'Old English G5', Helvetica, Arial, sans-serif;
-    font-style: normal;
-    font-weight: 600;
-    font-size: 45px;
-    line-height: 52px;
-}
-
-.newspaper-legal {
-  font-family: 'Fe Fell', Helvetica, Arial, sans-serif;
-  font-style: normal;
-  font-size: 12px;
-  line-height: 16px;
-  letter-spacing: 0.25px;
-}
-
-.newspaper-body {
-  font-family: 'Italiana Regular', Helvetica, Arial, sans-serif;
-  font-style: normal;
-  font-weight: 600;
-  font-size: 16px;
-  line-height: 24px;
-  letter-spacing: 0.5px;
-}

@@ -5,6 +5,7 @@ import cors from 'cors';
 import puppeteer from 'puppeteer';
 import dotenv from 'dotenv';
 import fs from 'fs';
+import matter from 'gray-matter';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 
@@ -16,6 +17,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const app = express();
 app.use(cors())
 app.use('/game-covers', express.static(join(__dirname, 'game-covers')));
+app.use('/article-images', express.static(join(__dirname, 'article-images')));
 
 // Use body-parser to parse JSON request bodies
 app.use(bodyParser.json());
@@ -160,6 +162,97 @@ app.post('/chat', async (req, res) => {
 
 app.get('/backloggd-games', (req, res) => {
     res.json(backloggdGames);
+});
+
+// Articles are markdown files with frontmatter, committed to backend/articles/
+// (edited via the Decap CMS admin at /admin, which commits straight to this repo).
+const ARTICLES_DIR = join(__dirname, 'articles');
+
+app.get('/articles', (req, res) => {
+    const files = fs.readdirSync(ARTICLES_DIR).filter(f => f.endsWith('.md'));
+    const articles = files.map(file => {
+        const { data } = matter(fs.readFileSync(join(ARTICLES_DIR, file), 'utf8'));
+        return {
+            slug: file.replace(/\.md$/, ''),
+            title: data.title,
+            date: data.date,
+            author: data.author,
+            teaser: data.teaser,
+        };
+    }).sort((a, b) => new Date(b.date) - new Date(a.date));
+
+    res.json(articles);
+});
+
+app.get('/articles/:slug', (req, res) => {
+    const filePath = join(ARTICLES_DIR, `${req.params.slug}.md`);
+    if (!fs.existsSync(filePath)) {
+        return res.status(404).json({ error: 'Article not found' });
+    }
+
+    const { data, content } = matter(fs.readFileSync(filePath, 'utf8'));
+    res.json({
+        title: data.title,
+        date: data.date,
+        author: data.author,
+        body: content,
+    });
+});
+
+// Decap CMS GitHub OAuth provider, so the /admin editor at the frontend can
+// authenticate with GitHub and commit article changes directly to this repo.
+// See: https://decapcms.org/docs/external-oauth-clients/
+const GITHUB_OAUTH_CLIENT_ID = process.env.GITHUB_OAUTH_CLIENT_ID;
+const GITHUB_OAUTH_CLIENT_SECRET = process.env.GITHUB_OAUTH_CLIENT_SECRET;
+
+app.get('/auth', (req, res) => {
+    const redirectUri = `${req.protocol}://${req.get('host')}/callback`;
+    const params = new URLSearchParams({
+        client_id: GITHUB_OAUTH_CLIENT_ID,
+        scope: 'repo',
+        redirect_uri: redirectUri,
+    });
+    res.redirect(`https://github.com/login/oauth/authorize?${params.toString()}`);
+});
+
+app.get('/callback', async (req, res) => {
+    const { code } = req.query;
+
+    try {
+        const tokenResponse = await fetch('https://github.com/login/oauth/access_token', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+            body: JSON.stringify({
+                client_id: GITHUB_OAUTH_CLIENT_ID,
+                client_secret: GITHUB_OAUTH_CLIENT_SECRET,
+                code,
+            }),
+        });
+        const { access_token, error } = await tokenResponse.json();
+
+        if (error || !access_token) {
+            return res.status(400).send(`OAuth error: ${error || 'no access_token returned'}`);
+        }
+
+        const message = JSON.stringify({ token: access_token, provider: 'github' });
+        res.send(`
+            <script>
+                (function() {
+                    function receiveMessage(e) {
+                        window.opener.postMessage(
+                            'authorization:github:success:${message}',
+                            e.origin
+                        );
+                        window.removeEventListener('message', receiveMessage, false);
+                    }
+                    window.addEventListener('message', receiveMessage, false);
+                    window.opener.postMessage('authorizing:github', '*');
+                })();
+            </script>
+        `);
+    } catch (err) {
+        res.status(500).send(`OAuth error: ${err.message}`);
+    }
 });
 
 app.listen(5000, () => {

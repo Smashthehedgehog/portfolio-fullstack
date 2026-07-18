@@ -1,0 +1,12 @@
+.blog-card {
+  border-radius: var(--radius-card);
+  background-color: var(--c-surface-dark);
+  padding: 1rem;
+  transition: outline 0.1s ease-in-out;
+  outline: 0px solid #000;
+}
+
+.blog-card:hover {
+  outline: 4px solid #000;
+  transition: outline 0.1s ease-in-out;
+}

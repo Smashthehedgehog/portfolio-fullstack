@@ -1,0 +1,22 @@
+backend:
+  name: github
+  repo: Smashthehedgehog/portfolio-fullstack
+  branch: main
+  base_url: https://portfolio-fullstack-i29z.onrender.com
+  auth_endpoint: auth
+
+media_folder: "backend/article-images"
+public_folder: "/article-images"
+
+collections:
+  - name: "articles"
+    label: "Articles"
+    folder: "backend/articles"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Date", name: "date", widget: "datetime" }
+      - { label: "Author", name: "author", widget: "string", default: "Michael Ani" }
+      - { label: "Teaser", name: "teaser", widget: "text" }
+      - { label: "Body", name: "body", widget: "markdown" }
