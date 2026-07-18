@@ -14,7 +14,7 @@ import Home from './pages/Home';
 import AboutMe from './pages/AboutMe';
 import Projects from './pages/Projects';
 import Articles from './pages/Articles';
-import Writing_TheRoughDraftOfTheWebsite from './pages/Writing_TheRoughDraftOfTheWebsite';
+import ArticleDetail from './pages/ArticleDetail';
 import Resume from './pages/Resume';
 import Contact from './pages/Contact';
 
@@ -49,7 +49,7 @@ function App() {
                 <Route path={"/about-me"} element={<AboutMe />} />
                 <Route path={"/projects"} element={<Projects />} />
                 <Route path={"/articles"} element={<Articles />} />
-                <Route path={"/articles/the-rough-draft-of-the-website"} element={<Writing_TheRoughDraftOfTheWebsite />} />
+                <Route path={"/articles/:slug"} element={<ArticleDetail />} />
                 <Route path={"/resume"} element={<Resume />} />
                 <Route path={"/contact"} element={<Contact />} />
 
