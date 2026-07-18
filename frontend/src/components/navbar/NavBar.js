@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { NavLink } from 'react-router-dom';
 import navItems from '../../data/nav.json';
 import NavItem from './NavItem';
 import './NavBar.css';
@@ -28,11 +27,7 @@ export default function NavBar() {
     return (
         <header className="site-navbar">
             <div className="site-navbar-accent-stripe"></div>
-            <div className="site-navbar-inner d-flex align-items-center justify-content-between">
-                <NavLink to="/" className="brand headline-4-large no-decoration" onClick={closeMenu}>
-                    MA
-                </NavLink>
-
+            <div className="site-navbar-inner d-flex align-items-center">
                 <nav className={`site-navbar-links ${menuOpen ? 'open' : ''}`} aria-label="Primary">
                     {navItems.map((item) => (
                         <NavItem key={item.path} item={item} onNavigate={closeMenu} />
@@ -42,19 +37,21 @@ export default function NavBar() {
                     </div>
                 </nav>
 
-                <div className="d-none d-md-flex align-items-center gap-3">
-                    <NavSocialIcons />
-                </div>
+                <div className="d-flex align-items-center gap-3 ms-auto">
+                    <div className="d-none d-md-flex align-items-center gap-3">
+                        <NavSocialIcons />
+                    </div>
 
-                <button
-                    type="button"
-                    className="site-navbar-toggle d-md-none"
-                    aria-expanded={menuOpen}
-                    aria-label={menuOpen ? 'Close navigation menu' : 'Open navigation menu'}
-                    onClick={toggleMenu}
-                >
-                    <i className={`bi ${menuOpen ? 'bi-x-lg' : 'bi-list'}`}></i>
-                </button>
+                    <button
+                        type="button"
+                        className="site-navbar-toggle d-md-none"
+                        aria-expanded={menuOpen}
+                        aria-label={menuOpen ? 'Close navigation menu' : 'Open navigation menu'}
+                        onClick={toggleMenu}
+                    >
+                        <i className={`bi ${menuOpen ? 'bi-x-lg' : 'bi-list'}`}></i>
+                    </button>
+                </div>
             </div>
         </header>
     );

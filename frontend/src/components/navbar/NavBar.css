@@ -18,11 +18,6 @@
     gap: 1rem;
 }
 
-.site-navbar .brand {
-    color: var(--c-blue);
-    letter-spacing: 1px;
-}
-
 .site-navbar-links {
     display: flex;
     align-items: center;
