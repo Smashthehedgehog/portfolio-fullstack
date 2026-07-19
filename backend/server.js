@@ -15,6 +15,10 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 
 // Initialize the Express application
 const app = express();
+// Render terminates TLS at its edge and forwards requests over plain HTTP;
+// without this, req.protocol reports "http" even for HTTPS visitors, which
+// breaks the GitHub OAuth redirect_uri built below.
+app.set('trust proxy', true);
 app.use(cors())
 app.use('/game-covers', express.static(join(__dirname, 'game-covers')));
 app.use('/article-images', express.static(join(__dirname, 'article-images')));
