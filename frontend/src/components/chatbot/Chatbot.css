@@ -103,3 +103,23 @@ button {
 .chat-container.open {
     visibility: visible;
 }
+
+@media screen and (max-width: 767px) {
+    .chat-container {
+        width: calc(100vw - 2rem);
+        max-width: 300px;
+    }
+
+    .chat-messages {
+        height: 240px;
+    }
+
+    .chatbot-icon {
+        width: 60px;
+        height: 60px;
+    }
+
+    .chatbot-icon.open {
+        bottom: 23rem;
+    }
+}

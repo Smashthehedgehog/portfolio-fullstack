@@ -49,3 +49,10 @@
 .newspaper-body img {
   max-width: 100%;
 }
+
+@media screen and (max-width: 767px) {
+  .newspaper-title {
+    font-size: 32px;
+    line-height: 38px;
+  }
+}

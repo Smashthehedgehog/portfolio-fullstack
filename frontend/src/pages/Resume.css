@@ -11,3 +11,7 @@
   height: 100%;
   border: none;
 }
+
+.resume-mobile-link {
+  width: fit-content;
+}
