@@ -17,6 +17,13 @@
     cursor: grabbing;
 }
 
+@media screen and (max-width: 767px) {
+    .network-graph-container {
+        height: 60vh;
+        min-height: 380px;
+    }
+}
+
 .pill-button {
     border-radius: var(--radius-pill);
     padding: 4px 8px;

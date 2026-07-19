@@ -104,4 +104,17 @@
     .site-navbar-links .site-navbar-link.active::after {
         display: none;
     }
+
+    .site-navbar-toggle {
+        padding: 0.625rem;
+        min-width: 44px;
+        min-height: 44px;
+    }
+
+    .mobile-cta {
+        margin-top: 0.75rem;
+        padding-top: 0.75rem;
+        border-top: 1px solid rgba(0, 0, 0, 0.1);
+        gap: 1.25rem !important;
+    }
 }

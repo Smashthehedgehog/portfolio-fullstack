@@ -4,6 +4,10 @@
     opacity: 1 !important;
     transform: none !important;
   }
+
+  .fit-content {
+    min-width: 0;
+  }
 }
 
 .fit-content {

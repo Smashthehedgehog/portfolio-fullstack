@@ -308,4 +308,47 @@
     letter-spacing: 0px;
   }
 
+  /*----------------Mobile Responsive Overrides-------------------*/
+  @media screen and (max-width: 767px) {
+    .display-1-large {
+      font-size: 40px;
+      line-height: 48px;
+    }
+
+    .display-2-large {
+      font-size: 36px;
+      line-height: 44px;
+    }
+
+    .display-3-large {
+      font-size: 32px;
+      line-height: 40px;
+    }
+
+    .headline-1-large {
+      font-size: 28px;
+      line-height: 36px;
+    }
+
+    .headline-2-large {
+      font-size: 26px;
+      line-height: 34px;
+    }
+
+    .headline-3-large {
+      font-size: 22px;
+      line-height: 28px;
+    }
+
+    .headline-4-large {
+      font-size: 20px;
+      line-height: 28px;
+    }
+
+    .headline-5-large {
+      font-size: 18px;
+      line-height: 24px;
+    }
+  }
+
 /* sourceMappingURL=cricketFontsCSS.5f991ad743e0a025a799.css.map */
