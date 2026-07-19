@@ -7,7 +7,7 @@ teaser: My thoughts on why I started this website in the first place and my
 ---
 When I graduated, I was trying to do anything to improve my chances of getting a job, and one thing I noticed I didn't have was a proper profile. The realization hit me when I went on my co-intern from Amdocs Tom's LinkedIn, as he graduated as well. The first thing I noticed was that he has a link to [his own website](https://robbowen.digital/), which he created from React.
 
-Inspired by his creation, I wanted to look at multiple website portfolios that were created from scratch, avoiding the use of a template so I can hone my frontend development skills naturally. I ended up finding [this portfolio](https://www.tomkastoryano.com/) by Robb Owen, an astounding showcase of web development whih several features:
+Inspired by his creation, I wanted to look at multiple website portfolios that were created from scratch, avoiding the use of a template so I can hone my frontend development skills naturally. I ended up finding [this portfolio](https://robbowen.digital/) by Robb Owen, an astounding showcase of web development whih several features:
 
 * Consideration of Accessibility.
 * A multitude of pages.
