@@ -1,5 +1,6 @@
 {
   "completed": [
+    "/game-covers/co1rdq.jpg",
     "/game-covers/co1zfb.jpg",
     "/game-covers/co24tq.jpg",
     "/game-covers/co6219.jpg",
@@ -38,11 +39,8 @@
     "/game-covers/co4nvr.jpg",
     "/game-covers/co5ace.jpg",
     "/game-covers/co5ueo.jpg",
-    "/game-covers/co5r6p.jpg",
-    "/game-covers/co6j8n.jpg"
+    "/game-covers/co5r6p.jpg"
   ],
-  "playing": [
-    "/game-covers/co1rdq.jpg"
-  ],
-  "updatedAt": "2026-07-20T06:40:42.014Z"
+  "playing": [],
+  "updatedAt": "2026-07-21T06:23:37.333Z"
 }
