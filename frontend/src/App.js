@@ -17,6 +17,7 @@ import Articles from './pages/Articles';
 import ArticleDetail from './pages/ArticleDetail';
 import Resume from './pages/Resume';
 import Contact from './pages/Contact';
+import AnimeVibeRecommender from './pages/AnimeVibeRecommender';
 
 
 
@@ -52,6 +53,7 @@ function App() {
                 <Route path={"/articles/:slug"} element={<ArticleDetail />} />
                 <Route path={"/resume"} element={<Resume />} />
                 <Route path={"/contact"} element={<Contact />} />
+                <Route path={"/anime-vibe-recommender"} element={<AnimeVibeRecommender />} />
 
                 {/* legacy path redirects */}
                 <Route path={"/Autobiography"} element={<Navigate to="/about-me" replace />} />
