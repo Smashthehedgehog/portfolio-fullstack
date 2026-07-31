@@ -113,19 +113,20 @@ const AnimeVibeRecommender = () => {
                     The interesting part: it's exposed both as a conventional REST API{' '}
                     <em>and</em> as a full MCP (Model Context Protocol) server, so any
                     MCP-aware AI agent can call it as a tool. The AI Recommendation option
-                    below is a real demonstration of that — a Groq-hosted LLM connects to the
-                    API's own MCP endpoint as a genuine client, searches the catalog itself,
-                    and ranks its own top 10 picks with reasoning, rather than the app just
-                    handing back a raw similarity-ranked list. Ships with API-key auth and
-                    per-key rate limiting, and a Postgres-backed job for keeping the catalog in
-                    sync with AniList weekly.
+                    below is a real demonstration of that — a Groq-hosted LLM acts as a
+                    genuine MCP client against this same API's MCP server, searches the
+                    catalog itself, and ranks its own top 10 picks with reasoning, rather
+                    than the app just handing back a raw similarity-ranked list. Ships with
+                    API-key auth and per-key rate limiting.
                 </p>
                 <p>
                     Also an honest case study in free-tier infrastructure limits: the fast
                     vector index (HNSW) this would ideally run on is too compute-intensive to
                     build on the current Supabase free tier, so Direct Search below runs
-                    unindexed and slower than it should — a real tradeoff, left visible rather
-                    than hidden.
+                    unindexed and slower than it should, and the catalog is refreshed from
+                    AniList manually rather than on an automated schedule (a real cron job
+                    has a minimum cost even on Render's paid plans) — real tradeoffs, left
+                    visible rather than hidden.
                 </p>
                 <div className="d-flex flex-wrap gap-3 mt-3">
                     <a className="project-link no-decoration" href="https://github.com/Smashthehedgehog/anime-vibe-api" target="_blank" rel="noreferrer">View on GitHub</a>
