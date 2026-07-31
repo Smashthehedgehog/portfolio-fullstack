@@ -117,4 +117,15 @@ export const projects = [
         accent: 'blue-red',
         image: linkedinCandidateAnalyticsImage,
     },
+    {
+        slug: 'anime-vibe-recommender',
+        title: 'Anime Vibe Recommender',
+        subtitle: 'Semantic Search + MCP Recommendation Agent',
+        description: 'A semantic "vibe" search engine over the full AniList anime/manga catalog (120k+ titles) — describe a mood or theme in plain language and get back genuinely relevant matches, not keyword hits. Built with a FastAPI backend, Supabase/pgvector for embedding storage and similarity search, and SentenceTransformers for query embedding. The interesting part: it\'s exposed both as a conventional REST API and as a full MCP (Model Context Protocol) server, so any MCP-aware AI agent can call it as a tool. The live demo\'s AI Recommendation option is a real demonstration of that — a Groq-hosted LLM connects to the API\'s own MCP endpoint as a genuine client, searches the catalog itself, and ranks its own top 10 picks with reasoning, rather than the app just handing back a raw similarity-ranked list. Ships with API-key auth and per-key rate limiting, and a Postgres-backed job for keeping the catalog in sync with AniList weekly. Also an honest case study in free-tier infrastructure limits: the fast vector index (HNSW) this would ideally run on is too compute-intensive to build on the current Supabase free tier, so direct search runs unindexed and slower than it should — a real tradeoff, left visible on the demo page rather than hidden.',
+        techStack: ['Python', 'FastAPI', 'pgvector', 'MCP'],
+        githubUrl: 'https://github.com/Smashthehedgehog/anime-vibe-api',
+        liveUrl: 'https://www.michaelani.com/anime-vibe-recommender',
+        attribution: null,
+        accent: 'amber-mint',
+    },
 ];
