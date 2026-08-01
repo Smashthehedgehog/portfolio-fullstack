@@ -1,5 +1,6 @@
 {
   "completed": [
+    "/game-covers/cobfzp.jpg",
     "/game-covers/co1rdq.jpg",
     "/game-covers/co1zfb.jpg",
     "/game-covers/co24tq.jpg",
@@ -26,7 +27,6 @@
     "/game-covers/cobl61.jpg",
     "/game-covers/cob5xx.jpg",
     "/game-covers/co2ish.jpg",
-    "/game-covers/cobfzp.jpg",
     "/game-covers/co1nih.jpg",
     "/game-covers/co6h43.jpg",
     "/game-covers/co4n93.jpg",
@@ -41,6 +41,8 @@
     "/game-covers/co5ueo.jpg",
     "/game-covers/co5r6p.jpg"
   ],
-  "playing": [],
-  "updatedAt": "2026-07-31T06:38:51.797Z"
+  "playing": [
+    "/game-covers/cobfzp.jpg"
+  ],
+  "updatedAt": "2026-08-01T06:22:52.844Z"
 }
