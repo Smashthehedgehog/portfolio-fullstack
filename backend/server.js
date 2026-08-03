@@ -53,11 +53,25 @@ const backloggdGames = {
 console.log(`Backloggd: ${backloggdGames.completed.length} completed, ${backloggdGames.playing.length} playing (from games.json)`);
 
 const USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36';
-const PUPPETEER_LAUNCH_OPTS = { args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage', '--disable-gpu'] };
+// --single-process cuts Chromium's own process/memory overhead further --
+// this crawl runs on Render's free 512 MB instance, where a multi-process
+// Chromium (the default) was pushing the container over its memory limit
+// and getting OOM-killed before the server ever finished starting up.
+const PUPPETEER_LAUNCH_OPTS = {
+    args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage', '--disable-gpu', '--single-process'],
+};
+// How many pages to hold open in Chromium at once during the crawl. Each
+// open page is its own memory cost on top of Chromium's baseline -- on a
+// 512 MB container, 5 concurrent pages (the old default) was enough on
+// its own to exceed the limit. Sequential (1 at a time) is slower but
+// keeps peak memory to roughly one page's worth, which is what actually
+// matters here: this crawl runs once at startup, not per-request, so
+// trading speed for reliability is the right tradeoff.
+const CRAWL_CONCURRENCY = 1;
 
 // Crawl the portfolio site with one browser, discovering pages dynamically.
 // Returns an array of { url, text } for every internal page found (up to maxPages).
-const crawlPortfolioSite = async (baseUrl, maxPages = 30) => {
+const crawlPortfolioSite = async (baseUrl, maxPages = 15) => {
     const visited = new Set();
     const queue = [baseUrl];
     const results = [];
@@ -66,7 +80,7 @@ const crawlPortfolioSite = async (baseUrl, maxPages = 30) => {
     try {
         // BFS: two passes so nested routes (e.g. /Writings/slug) are discovered from their parent
         while (queue.length > 0 && visited.size < maxPages) {
-            const batch = queue.splice(0, 5).filter(url => !visited.has(url));
+            const batch = queue.splice(0, CRAWL_CONCURRENCY).filter(url => !visited.has(url));
             if (batch.length === 0) continue;
             batch.forEach(url => visited.add(url));
 
@@ -131,7 +145,19 @@ Michael's nickname is Mike. Many people call him Big Mike.
 Michael is a huge Sonic fan.`;
 
 conversations['user'].push({ role: 'system', content: mike_prompt });
-await initializeWebsiteContent();
+// Deliberately not awaited: this crawl launches a full Chromium instance
+// and can take a while (or, on a memory-constrained container, fail
+// outright). Awaiting it here blocked app.listen() below until it
+// finished -- meaning every route (articles, backloggd-games, auth, even
+// this same /chat route before it has context) was unreachable for the
+// entire crawl, and if the crawl itself got OOM-killed, the server never
+// started listening at all (Render's edge then reports a bad gateway,
+// since nothing is bound to the port). Letting it run in the background
+// means the server accepts traffic immediately; /chat just answers with
+// less site context until this resolves. initializeWebsiteContent()
+// already catches its own errors, so this is safe to fire without a
+// .catch() here.
+initializeWebsiteContent();
 
 // Define a POST route for the chatbot
 app.post('/chat', async (req, res) => {
