@@ -13,6 +13,11 @@ const PUPPETEER_LAUNCH_OPTS = { args: ['--no-sandbox', '--disable-setuid-sandbox
 const BACKLOGGD_PLAYING_URL = 'https://backloggd.com/u/BigMike62/games/added/type:playing/';
 const BACKLOGGD_PLAYED_URL  = 'https://backloggd.com/u/BigMike62/games/added/type:played/';
 
+// How long Anubis's proof-of-work takes varies a lot run to run - on GitHub
+// Actions it's typically done in a few seconds, but occasionally spikes past
+// a minute, so the timeout needs enough headroom to cover a slow day.
+const NAVIGATION_TIMEOUT = 120000;
+
 // Backloggd sits behind Anubis, a proof-of-work bot challenge that only
 // resolves once its JS runs in a real browser engine, so a plain fetch()
 // just gets served the challenge page. Puppeteer lets the challenge solve
@@ -21,7 +26,7 @@ const scrape = async (browser, url) => {
     const page = await browser.newPage();
     try {
         await page.setUserAgent(USER_AGENT);
-        await page.goto(url, { waitUntil: 'networkidle0', timeout: 60000 });
+        await page.goto(url, { waitUntil: 'networkidle0', timeout: NAVIGATION_TIMEOUT });
 
         // Anubis's proof-of-work runs in a Web Worker with no network activity,
         // so networkidle0 can resolve while still on the challenge page; once
@@ -59,14 +64,28 @@ const downloadCover = async (url) => {
     return `/game-covers/${filename}`;
 };
 
+// Even with a generous NAVIGATION_TIMEOUT, an unlucky day can still exceed
+// it - retry the whole navigation on a fresh page rather than failing the
+// scheduled job outright.
+const scrapeWithRetries = async (browser, url, attempts = 3) => {
+    for (let attempt = 1; ; attempt++) {
+        try {
+            return await scrape(browser, url);
+        } catch (err) {
+            if (attempt >= attempts) throw err;
+            console.warn(`Attempt ${attempt} for ${url} failed (${err.message}), retrying...`);
+        }
+    }
+};
+
 // Scraped sequentially, not in parallel: two pages racing the Anubis
 // challenge cookie in the same browser context intermittently caused one
 // of them to come back empty.
 const browser = await puppeteer.launch(PUPPETEER_LAUNCH_OPTS);
 let completedUrls, playingUrls;
 try {
-    completedUrls = await scrape(browser, BACKLOGGD_PLAYED_URL);
-    playingUrls = await scrape(browser, BACKLOGGD_PLAYING_URL);
+    completedUrls = await scrapeWithRetries(browser, BACKLOGGD_PLAYED_URL);
+    playingUrls = await scrapeWithRetries(browser, BACKLOGGD_PLAYING_URL);
 } finally {
     await browser.close();
 }
