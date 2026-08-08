@@ -18,7 +18,7 @@ function Home() {
             />
         </div>
         <div className="header-container d-flex flex-column justify-content-center">
-            <p data-aos="zoom-in" className='headline-3-large'> Yerrrrr, my name is</p>
+            <p data-aos="zoom-in" className='headline-3-large'> Salutations! My name is</p>
             <p data-aos="zoom-in" data-aos-delay="400" className='display-1-large hero-name-wrap'>
                 <span className="hero-name"> Michael Chibuikem Ani</span>
             </p>
