@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
 import axios from 'axios';
 import './AnimeVibeRecommender.css';
 
 const API_BASE = process.env.REACT_APP_ANIME_VIBE_API_BASE;
 const API_KEY = process.env.REACT_APP_ANIME_VIBE_API_KEY;
 
-const TYPE_OPTIONS = ['ALL', 'ANIME', 'MANGA'];
+const TYPE_OPTIONS = ['ANIME', 'MANGA'];
 
 function MediaCard({ media, showScore, rank, reason }) {
     const tags = [...(media.genres || []), ...(media.tags || [])].slice(0, 8);
@@ -49,7 +48,7 @@ function MediaCard({ media, showScore, rank, reason }) {
 const AnimeVibeRecommender = () => {
     const [method, setMethod] = useState('recommend');
     const [vibe, setVibe] = useState('a cozy slow-burn romance with found family themes');
-    const [type, setType] = useState('ALL');
+    const [type, setType] = useState('ANIME');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [searchResults, setSearchResults] = useState(null);
@@ -103,11 +102,13 @@ const AnimeVibeRecommender = () => {
 
             <div data-aos="fade-left" className="avr-about body-1-large mb-5">
                 <p>
-                    A semantic "vibe" search engine over the full AniList anime/manga catalog
-                    (120k+ titles) — describe a mood or theme in plain language and get back
-                    genuinely relevant matches, not keyword hits. Built with a FastAPI backend,
-                    Supabase/pgvector for embedding storage and similarity search, and
-                    SentenceTransformers for query embedding.
+                    A semantic "vibe" search engine over a curated AniList catalog — the
+                    2,500 most popular anime and 2,500 most popular manga, kept as two
+                    separate pools (search picks one, not both at once) — describe a mood
+                    or theme in plain language and get back genuinely relevant matches, not
+                    keyword hits. Built with a FastAPI backend, Supabase/pgvector for
+                    embedding storage and similarity search, and SentenceTransformers for
+                    query embedding.
                 </p>
                 <p>
                     The interesting part: it's exposed both as a conventional REST API{' '}
@@ -120,13 +121,15 @@ const AnimeVibeRecommender = () => {
                     API-key auth and per-key rate limiting.
                 </p>
                 <p>
-                    Also an honest case study in free-tier infrastructure limits: the fast
-                    vector index (HNSW) this would ideally run on is too compute-intensive to
-                    build on the current Supabase free tier, so Direct Search below runs
-                    unindexed and slower than it should, and the catalog is refreshed from
-                    AniList manually rather than on an automated schedule (a real cron job
-                    has a minimum cost even on Render's paid plans) — real tradeoffs, left
-                    visible rather than hidden.
+                    Also an honest case study in free-tier infrastructure limits: this
+                    started as the *full* AniList catalog (120k+ titles), but that made the
+                    fast vector index (HNSW) too compute-intensive to build on Supabase's
+                    free tier, so Direct Search ran unindexed and slower than it should.
+                    Trimming to a curated 5,000-title catalog fixed that outright — HNSW
+                    builds trivially at this size — at the cost of breadth. The catalog is
+                    also still refreshed from AniList manually rather than on an automated
+                    schedule (a real cron job has a minimum cost even on Render's paid
+                    plans) — real tradeoffs, left visible rather than hidden.
                 </p>
                 <div className="d-flex flex-wrap gap-3 mt-3">
                     <a className="project-link no-decoration" href="https://github.com/Smashthehedgehog/anime-vibe-api" target="_blank" rel="noreferrer">View on GitHub</a>
@@ -164,16 +167,6 @@ const AnimeVibeRecommender = () => {
                         </button>
                     </div>
 
-                    {method === 'search' && (
-                        <p className="avr-note legal-1-demi">
-                            Running without its fast-search index right now — building one
-                            (HNSW) is more compute than fits on my current free-tier database
-                            plan. Searches still work, just slower than they should (a few
-                            seconds instead of milliseconds). Got ideas for solving this
-                            cheaply? <Link to="/contact">I'd love to hear them</Link>.
-                        </p>
-                    )}
-
                     <form onSubmit={handleSubmit} className="avr-form">
                         <div>
                             <label htmlFor="avr-vibe" className="legal-1-demi d-block mb-1">Vibe</label>
@@ -206,7 +199,7 @@ const AnimeVibeRecommender = () => {
                     </form>
 
                     <div className="avr-status legal-1-demi">
-                        {loading && method === 'search' && 'Searching... this can take a few seconds without the fast index.'}
+                        {loading && method === 'search' && 'Searching...'}
                         {loading && method === 'recommend' && "Asking the agent... this can take up to 30 seconds — it's really searching the catalog and reasoning about results, not a static response."}
                         {!loading && error && <span className="avr-error">{error}</span>}
                         {!loading && !error && searchResults && `${searchResults.length} result(s) in ${elapsed}s`}
