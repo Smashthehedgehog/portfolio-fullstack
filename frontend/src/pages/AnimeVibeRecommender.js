@@ -29,7 +29,6 @@ function MediaCard({ media, showScore, rank, reason }) {
                 </div>
                 <div className="avr-card-meta legal-1-demi">
                     popularity {media.popularity}
-                    {showScore && <> &middot; similarity {media.similarity.toFixed(3)}</>}
                 </div>
                 {reason && <p className="avr-reason body-1-large">{reason}</p>}
                 <p className="avr-synopsis legal-1-demi">
@@ -107,8 +106,11 @@ const AnimeVibeRecommender = () => {
                     separate pools (search picks one, not both at once) — describe a mood
                     or theme in plain language and get back genuinely relevant matches, not
                     keyword hits. Built with a FastAPI backend, Supabase/pgvector for
-                    embedding storage and similarity search, and SentenceTransformers for
-                    query embedding.
+                    embedding storage and similarity search, and fastembed for query
+                    embedding. Direct Search below ranks by a blended score — 85%
+                    semantic similarity to your vibe, 15% popularity — rather than
+                    similarity alone, so two equally relevant matches don't tie-break
+                    purely on how niche one is.
                 </p>
                 <p>
                     The interesting part: it's exposed both as a conventional REST API{' '}
@@ -117,7 +119,7 @@ const AnimeVibeRecommender = () => {
                     below is a real demonstration of that — a Groq-hosted LLM acts as a
                     genuine MCP client against this same API's MCP server, searches the
                     catalog itself, and ranks its own top 10 picks with reasoning, rather
-                    than the app just handing back a raw similarity-ranked list. Ships with
+                    than the app just handing back that same blended-score list. Ships with
                     API-key auth and per-key rate limiting.
                 </p>
                 <p>
@@ -155,7 +157,7 @@ const AnimeVibeRecommender = () => {
                             onClick={() => setMethod('search')}
                         >
                             <strong>Direct Search</strong>
-                            <span>Ranked list from cosine similarity + popularity. Deterministic, no LLM.</span>
+                            <span>Ranked by score -- 85% semantic similarity to your vibe, 15% popularity. Deterministic, no LLM.</span>
                         </button>
                         <button
                             type="button"
