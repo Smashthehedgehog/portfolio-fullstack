@@ -7,8 +7,44 @@ import audioScribeImage from '../../pictures/projects/audioscribe.jpg';
 import usfbcAdminPlatformImage from '../../pictures/projects/usfbc-admin-platform.jpg';
 import nflAnalyticsDashboardImage from '../../pictures/projects/nfl-analytics-dashboard.jpg';
 import linkedinCandidateAnalyticsImage from '../../pictures/projects/linkedin-candidate-analytics.jpg';
+import animeVibeImage from '../../pictures/projects/shounen-jump.png';
 
 export const projects = [
+    {
+        slug: 'anime-vibe-recommender',
+        title: 'Anime Vibe Recommender',
+        subtitle: 'Semantic Search + MCP Recommendation Agent',
+        description: 'A semantic "vibe" search engine over a curated AniList catalog — the 2,500 most popular anime and 2,500 most popular manga, kept as two separate searchable pools — describe a mood or theme in plain language and get back genuinely relevant matches, not keyword hits. Built with a FastAPI backend, Supabase/pgvector for embedding storage and similarity search, and fastembed for query embedding. Direct Search ranks results by a blended score — 85% semantic similarity to your query, 15% popularity — rather than similarity alone, so two equally relevant matches don\'t tie-break purely on how niche one is. The interesting part: it\'s exposed both as a conventional REST API and as a full MCP (Model Context Protocol) server, so any MCP-aware AI agent can call it as a tool. The live demo\'s AI Recommendation option is a real demonstration of that — a Groq-hosted LLM acts as a genuine MCP client against this same API\'s MCP server, searches the catalog itself, and ranks its own top 10 picks with reasoning, rather than the app just handing back that same blended-score list. Ships with API-key auth and per-key rate limiting. Also an honest case study in free-tier infrastructure limits: this started as the full AniList catalog (120k+ titles), but that made the fast vector index (HNSW) too compute-intensive to build on Supabase\'s free tier, so direct search ran unindexed and slower than it should. Trimming to a curated 5,000-title catalog fixed that outright at the cost of breadth — a real tradeoff, left visible on the demo page rather than hidden, alongside the catalog\'s manual (not cron-automated) refresh schedule for the same free-tier cost reasons.',
+        techStack: ['Python', 'FastAPI', 'pgvector', 'MCP'],
+        githubUrl: 'https://github.com/Smashthehedgehog/anime-vibe-api',
+        liveUrl: 'https://www.michaelani.com/anime-vibe-recommender',
+        attribution: null,
+        accent: animeVibeImage,
+    },
+    {
+        slug: 'the-collective',
+        title: 'The Collective',
+        subtitle: 'Sports Article Publishing Platform',
+        description: 'A multi-writer basketball article publishing platform built on Next.js and Payload CMS, with a full editorial workflow (draft, review, publish), rich embeds for YouTube clips, tweets and live stat visuals, reader accounts, and visitor analytics. It ships with a legacy-content importer and cron-driven digest emails. I created the site from the ground up, and my LB and the site owner took it from there',
+        techStack: ['Next.js', 'TypeScript', 'Payload CMS'],
+        githubUrl: 'https://github.com/Smashthehedgehog/the-collective-test',
+        liveUrl: 'https://thehardwoodcollective.com/',
+        attribution: null,
+        accent: 'blue-red',
+        image: theCollectiveImage,
+    },
+    {
+        slug: 'chess-neural-network',
+        title: 'ChessMind',
+        subtitle: 'Chess-Move Prediction Neural Network',
+        description: 'A chess-move-prediction neural network trained on a Lichess game database using TensorFlow and Keras, paired with a playable pygame chess interface to try it out move by move. The repo includes multiple trained model variants, including a more "aggressive" playstyle model.',
+        techStack: ['Python', 'TensorFlow'],
+        githubUrl: 'https://github.com/Smashthehedgehog/chess_neural_network',
+        liveUrl: null,
+        attribution: null,
+        accent: 'amber-mint',
+        image: chessNeuralNetworkImage,
+    },
     {
         slug: 'tradebot',
         title: 'Q-Trader',
@@ -44,30 +80,6 @@ export const projects = [
         attribution: null,
         accent: 'blue-red',
         image: sonicActionRpgImage,
-    },
-    {
-        slug: 'chess-neural-network',
-        title: 'ChessMind',
-        subtitle: 'Chess-Move Prediction Neural Network',
-        description: 'A chess-move-prediction neural network trained on a Lichess game database using TensorFlow and Keras, paired with a playable pygame chess interface to try it out move by move. The repo includes multiple trained model variants, including a more "aggressive" playstyle model.',
-        techStack: ['Python', 'TensorFlow'],
-        githubUrl: 'https://github.com/Smashthehedgehog/chess_neural_network',
-        liveUrl: null,
-        attribution: null,
-        accent: 'amber-mint',
-        image: chessNeuralNetworkImage,
-    },
-    {
-        slug: 'the-collective',
-        title: 'The Collective',
-        subtitle: 'Sports Article Publishing Platform',
-        description: 'A multi-writer basketball article publishing platform built on Next.js and Payload CMS, with a full editorial workflow (draft, review, publish), rich embeds for YouTube clips, tweets and live stat visuals, reader accounts, and visitor analytics. It ships with a legacy-content importer and cron-driven digest emails. I created the site from the ground up, and my LB and the site owner took it from there',
-        techStack: ['Next.js', 'TypeScript', 'Payload CMS'],
-        githubUrl: 'https://github.com/Smashthehedgehog/the-collective-test',
-        liveUrl: 'https://thehardwoodcollective.com/',
-        attribution: null,
-        accent: 'blue-red',
-        image: theCollectiveImage,
     },
     {
         slug: 'gen-ai-mp3-to-musescore',
@@ -116,16 +128,5 @@ export const projects = [
         attribution: 'Client project — AutoNateAI',
         accent: 'blue-red',
         image: linkedinCandidateAnalyticsImage,
-    },
-    {
-        slug: 'anime-vibe-recommender',
-        title: 'Anime Vibe Recommender',
-        subtitle: 'Semantic Search + MCP Recommendation Agent',
-        description: 'A semantic "vibe" search engine over a curated AniList catalog — the 2,500 most popular anime and 2,500 most popular manga, kept as two separate searchable pools — describe a mood or theme in plain language and get back genuinely relevant matches, not keyword hits. Built with a FastAPI backend, Supabase/pgvector for embedding storage and similarity search, and fastembed for query embedding. Direct Search ranks results by a blended score — 85% semantic similarity to your query, 15% popularity — rather than similarity alone, so two equally relevant matches don\'t tie-break purely on how niche one is. The interesting part: it\'s exposed both as a conventional REST API and as a full MCP (Model Context Protocol) server, so any MCP-aware AI agent can call it as a tool. The live demo\'s AI Recommendation option is a real demonstration of that — a Groq-hosted LLM acts as a genuine MCP client against this same API\'s MCP server, searches the catalog itself, and ranks its own top 10 picks with reasoning, rather than the app just handing back that same blended-score list. Ships with API-key auth and per-key rate limiting. Also an honest case study in free-tier infrastructure limits: this started as the full AniList catalog (120k+ titles), but that made the fast vector index (HNSW) too compute-intensive to build on Supabase\'s free tier, so direct search ran unindexed and slower than it should. Trimming to a curated 5,000-title catalog fixed that outright at the cost of breadth — a real tradeoff, left visible on the demo page rather than hidden, alongside the catalog\'s manual (not cron-automated) refresh schedule for the same free-tier cost reasons.',
-        techStack: ['Python', 'FastAPI', 'pgvector', 'MCP'],
-        githubUrl: 'https://github.com/Smashthehedgehog/anime-vibe-api',
-        liveUrl: 'https://www.michaelani.com/anime-vibe-recommender',
-        attribution: null,
-        accent: 'amber-mint',
     },
 ];
