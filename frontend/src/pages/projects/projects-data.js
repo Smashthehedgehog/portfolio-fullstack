@@ -19,7 +19,8 @@ export const projects = [
         githubUrl: 'https://github.com/Smashthehedgehog/anime-vibe-api',
         liveUrl: 'https://www.michaelani.com/anime-vibe-recommender',
         attribution: null,
-        accent: animeVibeImage,
+        accent: 'amber-mint',
+        image: animeVibeImage,
     },
     {
         slug: 'the-collective',
