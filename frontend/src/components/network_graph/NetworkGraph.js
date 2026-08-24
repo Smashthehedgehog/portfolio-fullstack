@@ -1,7 +1,6 @@
 import React, { useRef, useState, useEffect, useCallback } from "react";
 import * as THREE from "three";
 import ForceGraph3D from "react-force-graph-3d";
-import axios from 'axios';
 import Modal from "../modal/Modal";
 import CarouselSlide from "../carousel_slide/CarouselSlide";
 import './NetworkGraph.css';
@@ -20,6 +19,11 @@ import musescore_liveyourlife from '../../pictures/musescore_liveyourlife.jpg';
 
 const musescore_image_set = [musescore_ego, musescore_goodbye, musescore_liveyourlife];
 
+// Manually managed: drop cover images into src/pictures/games to add/remove
+// games from the slideshow, no code changes needed.
+const gameImagesContext = require.context('../../pictures/games', false, /\.(png|jpe?g|webp)$/);
+const video_game_image_set = gameImagesContext.keys().sort().map(gameImagesContext);
+
 const CENTER_NODE_ID = 'center';
 const CENTER_SPRITE_PX = 140;
 const SATELLITE_SPRITE_PX = 70;
@@ -28,30 +32,7 @@ const COLOR_BLUE = '#3061e3';
 
 const PLACEHOLDER_BODY = 'Placeholder text — details coming soon.';
 
-const API_BASE = process.env.REACT_APP_API_BASE || 'https://u7uk2ych80.execute-api.us-east-1.amazonaws.com';
-
-function GameCarouselSlot({ loading, images }) {
-    if (loading) {
-        return <div className="d-flex justify-content-center align-items-center w-100 h-100 p-5">Loading games...</div>;
-    }
-    return images.length > 0 ? <CarouselSlide imageURLs={images} /> : null;
-}
-
 function VideoGamesContent() {
-    const [completedGames, setCompletedGames] = useState([]);
-    const [playingGames, setPlayingGames] = useState([]);
-    const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        axios.get(`${API_BASE}/backloggd-games`)
-            .then(res => {
-                setCompletedGames(res.data.completed.map(path => `${API_BASE}${path}`));
-                setPlayingGames(res.data.playing.map(path => `${API_BASE}${path}`));
-            })
-            .catch(err => console.error('Failed to load Backloggd games:', err))
-            .finally(() => setLoading(false));
-    }, []);
-
     return (
         <div className="subhead-1-large text-dark mb-5">
             <p>Throughout my life, I've played many, and I mean many, video games. From the ones you would expect like
@@ -59,20 +40,11 @@ function VideoGamesContent() {
                 the womb on Sonic Heroes, so my first video game system was a GameCube. Since then, I've owned a Gameboy, a Playstation,
                 a Nintendo DS, Wii, 3DS, Wii U, Xbox One, and a Switch. Along the line, I've played on other systems as well, playing more
                 and more games along the way. My favorite one always swaps between Sonic Unleashed and Xenoblade Chronicles 2, as those are fantastic
-                games worth their own weight. Here is a slideshow of 10 completely random video games, pulled dynamically from my Backloggd account through an API call I created.
+                games worth their own weight. Here is a slideshow of some of the games I've played.
             </p>
             <div className="justify-content-center d-flex">
                 <div className="sonic-card-no-link mb-4">
-                    <GameCarouselSlot loading={loading} images={completedGames} />
-                </div>
-            </div>
-            <p>If there is a certain type of games I really like, those are story-based video games, or ones with a beginning and an end more than
-                just sandbox video games. As such, I've been playing through many of those type of games. The video game(s) below are the ones I am currently playing (and yes, this is also pulled directly from Backloggd so
-                I wouldn't have to keep manually updating this page).:
-            </p>
-            <div className="justify-content-center d-flex">
-                <div className="sonic-card-no-link w-75 mb-4">
-                    <GameCarouselSlot loading={loading} images={playingGames} />
+                    <CarouselSlide imageURLs={video_game_image_set} />
                 </div>
             </div>
         </div>

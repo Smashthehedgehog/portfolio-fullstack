@@ -20,7 +20,6 @@ const app = express();
 // breaks the GitHub OAuth redirect_uri built below.
 app.set('trust proxy', true);
 app.use(cors())
-app.use('/game-covers', express.static(join(__dirname, 'game-covers')));
 app.use('/article-images', express.static(join(__dirname, 'article-images')));
 
 // Use body-parser to parse JSON request bodies
@@ -34,23 +33,6 @@ const client = new Groq({
 // In-memory store for conversations
 const conversations = {};
 conversations['user'] = [];
-
-// Load Backloggd game covers from committed games.json (updated by GitHub Actions daily)
-const shuffle = (arr) => {
-    const a = [...arr];
-    for (let i = a.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [a[i], a[j]] = [a[j], a[i]];
-    }
-    return a;
-};
-
-const gamesData = JSON.parse(fs.readFileSync(join(__dirname, 'games.json'), 'utf8'));
-const backloggdGames = {
-    completed: shuffle(gamesData.completed).slice(0, 10),
-    playing: gamesData.playing,
-};
-console.log(`Backloggd: ${backloggdGames.completed.length} completed, ${backloggdGames.playing.length} playing (from games.json)`);
 
 const USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36';
 // --single-process cuts Chromium's own process/memory overhead further --
@@ -148,7 +130,7 @@ conversations['user'].push({ role: 'system', content: mike_prompt });
 // Deliberately not awaited: this crawl launches a full Chromium instance
 // and can take a while (or, on a memory-constrained container, fail
 // outright). Awaiting it here blocked app.listen() below until it
-// finished -- meaning every route (articles, backloggd-games, auth, even
+// finished -- meaning every route (articles, auth, even
 // this same /chat route before it has context) was unreachable for the
 // entire crawl, and if the crawl itself got OOM-killed, the server never
 // started listening at all (Render's edge then reports a bad gateway,
@@ -188,10 +170,6 @@ app.post('/chat', async (req, res) => {
         // Handle any errors that occur
         res.status(500).json({ error: error.message });
     }
-});
-
-app.get('/backloggd-games', (req, res) => {
-    res.json(backloggdGames);
 });
 
 // Articles are markdown files with frontmatter, committed to backend/articles/

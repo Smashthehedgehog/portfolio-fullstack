@@ -13,7 +13,7 @@ const formatDate = (dateString) => new Date(dateString).toLocaleDateString('en-G
 });
 
 // Relative paths (e.g. "/article-images/...") come from the backend and need
-// the API base prepended, same convention as the Backloggd game covers.
+// the API base prepended.
 const resolveImageSrc = (src) => (src && src.startsWith('/') ? `${API_BASE}${src}` : src);
 
 const markdownComponents = {
