@@ -16,6 +16,7 @@ import video_game from '../../pictures/video_game.png';
 import musescore_ego from '../../pictures/musescore_ego.jpg';
 import musescore_goodbye from '../../pictures/musescore_goodbye.jpg';
 import musescore_liveyourlife from '../../pictures/musescore_liveyourlife.jpg';
+import anime_and_manga from '../../pictures/anime_and_manga.jpg';
 
 const musescore_image_set = [musescore_ego, musescore_goodbye, musescore_liveyourlife];
 
@@ -23,6 +24,11 @@ const musescore_image_set = [musescore_ego, musescore_goodbye, musescore_liveyou
 // games from the slideshow, no code changes needed.
 const gameImagesContext = require.context('../../pictures/games', false, /\.(png|jpe?g|webp)$/);
 const video_game_image_set = gameImagesContext.keys().sort().map(gameImagesContext);
+
+// Manually managed: drop pictures into src/pictures/animanga to add/remove
+// images from the slideshow, no code changes needed.
+const animangaImagesContext = require.context('../../pictures/animanga', false, /\.(png|jpe?g|webp)$/);
+const anime_manga_image_set = animangaImagesContext.keys().sort().map(animangaImagesContext);
 
 const CENTER_NODE_ID = 'center';
 const CENTER_SPRITE_PX = 140;
@@ -45,6 +51,35 @@ function VideoGamesContent() {
             <div className="justify-content-center d-flex">
                 <div className="sonic-card-no-link mb-4">
                     <CarouselSlide imageURLs={video_game_image_set} />
+                </div>
+            </div>
+        </div>
+    );
+}
+
+function AnimeMangaContent() {
+    return (
+        <div className="subhead-1-large text-dark mb-5">
+            <p>So I've also been an avid anime watcher since the dark days. Yes, before consuming anime and manga was cool, even before the first great
+                shift. From what I have seen, there have been 3 great shifts. There were the original dark days when if you mentioned you watched something other
+                than DBZ or Naruto, you were a 'weirdo'. The first shift was when One Punch Man came out back in late 2015, because much of the general
+                population really rocked with that show. It was still a niche interest, but more people started to accept it, just at the surface level though.
+                The next great shift happened in 2017 with the rise of My Hero Academia. Now that show became mainstream and everyone was watching it. It was the
+                face of new gen anime and it became even more socially acceptable to watch it. However, this was nothing compared to the 3rd great shift, where watching
+                anime became TRENDY. Episode 19 of Demon Slayer set anime on a skyrocket that it would never fall off of to this day, and don't get me started on Mugen Train!
+                Now everyone seems to like anime. The same people who would make fun of others for enjoying it are the same people who larp—fake their enjoyment to be performative—it! 
+                They don't know about watching anime on YouTube in a tiny box with the episode split into parts, thats how I watched Pokemon and Naruto! Plus,
+                everyone's doing Japan trips now. I've been wanting to go for years and now the flights have skyrocketed in price because everyone and their pet goose wants to
+                do a Japan trip...yeesh.
+            </p>
+            <p>Anyways, enough of my mini-ramble. Over the years, I've consumed a lot of anime, and started reading manga around late high school. Some of my favorite anime
+                of all time include Pokemon (which I binged in early middle school), One Piece (which I binged in early high school), and Gintama (which I binged in 6 weeks in
+                my fourth semester of college, all 360+ episodes and 3 movies). Some of my favorite anime, I liked even more as manga, such as Air Gear, Eyeshield 21, and currently
+                Blue Lock. If you need a recommendation, I might have one for you! Here are some anime I've watched/manga I've read.
+            </p>
+            <div className="justify-content-center d-flex">
+                <div className="sonic-card-no-link mb-4">
+                    <CarouselSlide imageURLs={anime_manga_image_set} />
                 </div>
             </div>
         </div>
@@ -204,6 +239,13 @@ const aspectNodes = [
         image: saxophone,
         popupTitle: 'Music',
         renderBody: () => <MusicContent />,
+    },
+    {
+        id: 'anime_manga',
+        label: 'Anime and Manga',
+        image: anime_and_manga,
+        popupTitle: 'Anime and Manga',
+        renderBody: () => <AnimeMangaContent />,
     },
     {
         id: 'heritage',
