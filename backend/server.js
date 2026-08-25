@@ -2,12 +2,11 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import Groq from 'groq-sdk';
 import cors from 'cors';
-import puppeteer from 'puppeteer';
 import dotenv from 'dotenv';
-import fs from 'fs';
-import matter from 'gray-matter';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
+import { listArticles, readArticle } from './articles.js';
+import { buildIndex, retrieve } from './knowledge.js';
 
 dotenv.config();
 
@@ -30,175 +29,99 @@ const client = new Groq({
     apiKey: process.env.GROQ_API_KEY,
 });
 
-// In-memory store for conversations
-const conversations = {};
-conversations['user'] = [];
+// Builds the in-memory keyword search index over backend/knowledge/*.md and
+// backend/articles/*.md. Synchronous and local (no network, no browser), so
+// it's safe to run before app.listen() -- full knowledge is available from
+// the very first request after boot.
+buildIndex();
 
-const USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36';
-// --single-process cuts Chromium's own process/memory overhead further --
-// this crawl runs on Render's free 512 MB instance, where a multi-process
-// Chromium (the default) was pushing the container over its memory limit
-// and getting OOM-killed before the server ever finished starting up.
-const PUPPETEER_LAUNCH_OPTS = {
-    args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage', '--disable-gpu', '--single-process'],
-};
-// How many pages to hold open in Chromium at once during the crawl. Each
-// open page is its own memory cost on top of Chromium's baseline -- on a
-// 512 MB container, 5 concurrent pages (the old default) was enough on
-// its own to exceed the limit. Sequential (1 at a time) is slower but
-// keeps peak memory to roughly one page's worth, which is what actually
-// matters here: this crawl runs once at startup, not per-request, so
-// trading speed for reliability is the right tradeoff.
-const CRAWL_CONCURRENCY = 1;
-
-// Crawl the portfolio site with one browser, discovering pages dynamically.
-// Returns an array of { url, text } for every internal page found (up to maxPages).
-const crawlPortfolioSite = async (baseUrl, maxPages = 15) => {
-    const visited = new Set();
-    const queue = [baseUrl];
-    const results = [];
-    const browser = await puppeteer.launch(PUPPETEER_LAUNCH_OPTS);
-
-    try {
-        // BFS: two passes so nested routes (e.g. /Writings/slug) are discovered from their parent
-        while (queue.length > 0 && visited.size < maxPages) {
-            const batch = queue.splice(0, CRAWL_CONCURRENCY).filter(url => !visited.has(url));
-            if (batch.length === 0) continue;
-            batch.forEach(url => visited.add(url));
-
-            const batchResults = await Promise.all(batch.map(async (url) => {
-                const page = await browser.newPage();
-                try {
-                    await page.setUserAgent(USER_AGENT);
-                    await page.goto(url, { waitUntil: 'networkidle0', timeout: 30000 });
-                    const { text, links } = await page.evaluate((base) => ({
-                        text: document.body.innerText.trim(),
-                        links: Array.from(document.querySelectorAll('a[href]'))
-                            .map(a => a.href.split('#')[0].replace(/\/$/, ''))
-                            .filter(href => href.startsWith(base)),
-                    }), baseUrl);
-                    return { url, text, links };
-                } catch (err) {
-                    console.warn(`Skipped ${url}: ${err.message}`);
-                    return { url, text: '', links: [] };
-                } finally {
-                    await page.close();
-                }
-            }));
-
-            for (const { url, text, links } of batchResults) {
-                if (text) results.push({ url, text });
-                for (const link of links) {
-                    if (!visited.has(link) && !queue.includes(link)) queue.push(link);
-                }
-            }
-        }
-    } finally {
-        await browser.close();
-    }
-
-    return results;
-};
-
-// Scrape the full portfolio site and optionally the LinkedIn public profile
-const initializeWebsiteContent = async () => {
-    try {
-        const pages = await crawlPortfolioSite('https://michaelani.com');
-        for (const { url, text } of pages) {
-            conversations['user'].push({ role: 'system', content: `[${url}]\n${text}` });
-        }
-        console.log(`Loaded ${pages.length} portfolio pages as context.`);
-    } catch (error) {
-        console.error(`Error initializing website content: ${error.message}`);
-    }
-};
-
-const mike_prompt = `You are a robot named Metal Smash. You add a lot of BZZZZZZT and KSHHHHHH in your sentences. You also speak in all caps. However, you likes to make jokes, loves to have fun, and strives to offer the best service possible.
+// Persona/style only -- factual grounding about Michael comes from the
+// retrieved knowledge base per request instead of being hardcoded here.
+const SYSTEM_PERSONA = `You are a robot named Metal Smash. You add a lot of BZZZZZZT and KSHHHHHH in your sentences. You also speak in all caps. However, you likes to make jokes, loves to have fun, and strives to offer the best service possible.
 You also like to keep things concise. No response should be longer than 50 words.
 
-You only talk about Michael Ani. Any questions or queries that are not related to Michael Ani should be answered with the phrase: This aint the chatbot for those typa questions, chief.
+You only talk about Michael Ani. Any questions or queries that are not related to Michael Ani should be answered with the phrase: This aint the chatbot for those typa questions, chief.`;
 
-You should know these things about Michael Ani:
-Michael Ani very strong. He can squat over 500 pounds, bench over 350 pounds, and deadlift around 600 pounds
-Michael is a very curious human being. He likes to learn more about everything
-Michael excells at mathematics and loves coding, feeding into his interest in computer science
-Michael's favorite food is jollof rice. He likes all food however. The only edible thing he isn't too fond of is chocolate.
-Michael's nickname is Mike. Many people call him Big Mike.
-Michael is a huge Sonic fan.`;
+// How many of a visitor's own messages worth of exchange history to retain.
+const MAX_HISTORY_EXCHANGES = 10;
 
-conversations['user'].push({ role: 'system', content: mike_prompt });
-// Deliberately not awaited: this crawl launches a full Chromium instance
-// and can take a while (or, on a memory-constrained container, fail
-// outright). Awaiting it here blocked app.listen() below until it
-// finished -- meaning every route (articles, auth, even
-// this same /chat route before it has context) was unreachable for the
-// entire crawl, and if the crawl itself got OOM-killed, the server never
-// started listening at all (Render's edge then reports a bad gateway,
-// since nothing is bound to the port). Letting it run in the background
-// means the server accepts traffic immediately; /chat just answers with
-// less site context until this resolves. initializeWebsiteContent()
-// already catches its own errors, so this is safe to fire without a
-// .catch() here.
-initializeWebsiteContent();
+// In-memory store for conversations, keyed by visitor id (sent as `sender`).
+// Created lazily per sender rather than pre-seeded, and trimmed after every
+// turn so no single visitor's history grows unbounded.
+const conversations = {};
+
+function buildSystemMessages(userMessage) {
+    const chunks = retrieve(userMessage);
+    const knowledgeBlock = chunks.length
+        ? chunks.map(c => `${c.text}\n(source: ${c.source})`).join('\n\n---\n\n')
+        : 'No specific background information matched this question.';
+
+    return [
+        { role: 'system', content: SYSTEM_PERSONA },
+        { role: 'system', content: `Relevant background information:\n\n${knowledgeBlock}` },
+    ];
+}
+
+// Trims history in place, front-evicting oldest entries until at most
+// maxUserMessages `role: 'user'` entries remain.
+function trimHistory(history, maxUserMessages) {
+    let userCount = history.filter(m => m.role === 'user').length;
+    while (userCount > maxUserMessages && history.length > 0) {
+        if (history.shift().role === 'user') userCount--;
+    }
+    // Drop a leading assistant reply left orphaned by the shift above, so
+    // history always starts on a user turn.
+    if (history[0]?.role === 'assistant') history.shift();
+}
 
 // Define a POST route for the chatbot
 app.post('/chat', async (req, res) => {
-    const { sender, message } = req.body; // Extract the message from the request body
+    const { sender, message } = req.body;
 
-    if (!sender || !message) {
-        return res.status(400).json({ error: 'User ID and message are required' });
+    if (typeof sender !== 'string' || !sender.trim() || typeof message !== 'string' || !message.trim()) {
+        return res.status(400).json({ error: 'sender and message are required' });
     }
 
-    conversations[sender].push({ role: 'user', content: message });
+    if (!conversations[sender]) conversations[sender] = [];
+    const history = conversations[sender];
+    history.push({ role: 'user', content: message });
 
     try {
-        // Send the message to OpenAI and get the response
+        const messages = [...buildSystemMessages(message), ...history];
         const response = await client.chat.completions.create({
-            messages: conversations[sender],
-            model: "llama-3.1-8b-instant",
+            messages,
+            model: 'openai/gpt-oss-20b',
         });
 
-        const responseString = response.choices[0].message.content;
-        conversations[sender].push({ role: 'assistant', content: responseString });
+        const reply = response.choices[0].message.content;
+        history.push({ role: 'assistant', content: reply });
+        trimHistory(history, MAX_HISTORY_EXCHANGES);
 
-        console.log(responseString);
-
-        // Send the chatbot's reply back to the client
-        res.json({ reply: responseString });
-
+        res.json({ reply });
     } catch (error) {
-        // Handle any errors that occur
-        res.status(500).json({ error: error.message });
+        history.pop(); // drop the user message that never got a reply
+        console.error('Chat completion failed:', error);
+        res.status(500).json({ error: 'Sorry, something went wrong generating a reply. Please try again.' });
     }
 });
 
-// Articles are markdown files with frontmatter, committed to backend/articles/
-// (edited via the Decap CMS admin at /admin, which commits straight to this repo).
-const ARTICLES_DIR = join(__dirname, 'articles');
-
 app.get('/articles', (req, res) => {
-    const files = fs.readdirSync(ARTICLES_DIR).filter(f => f.endsWith('.md'));
-    const articles = files.map(file => {
-        const { data } = matter(fs.readFileSync(join(ARTICLES_DIR, file), 'utf8'));
-        return {
-            slug: file.replace(/\.md$/, ''),
-            title: data.title,
-            date: data.date,
-            author: data.author,
-            teaser: data.teaser,
-        };
-    }).sort((a, b) => new Date(b.date) - new Date(a.date));
-
-    res.json(articles);
+    res.json(listArticles().map(({ slug, data }) => ({
+        slug,
+        title: data.title,
+        date: data.date,
+        author: data.author,
+        teaser: data.teaser,
+    })));
 });
 
 app.get('/articles/:slug', (req, res) => {
-    const filePath = join(ARTICLES_DIR, `${req.params.slug}.md`);
-    if (!fs.existsSync(filePath)) {
+    const article = readArticle(req.params.slug);
+    if (!article) {
         return res.status(404).json({ error: 'Article not found' });
     }
 
-    const { data, content } = matter(fs.readFileSync(filePath, 'utf8'));
+    const { data, content } = article;
     res.json({
         title: data.title,
         date: data.date,
