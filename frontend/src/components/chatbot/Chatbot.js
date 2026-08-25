@@ -2,7 +2,22 @@ import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import './Chatbot.css';
 
+const VISITOR_ID_KEY = 'chatbotVisitorId';
+
+// Each visitor gets their own persistent id so the backend can keep their
+// conversation history separate from every other visitor's, instead of
+// everyone sharing one chat.
+function getOrCreateVisitorId() {
+    let id = localStorage.getItem(VISITOR_ID_KEY);
+    if (!id) {
+        id = crypto.randomUUID();
+        localStorage.setItem(VISITOR_ID_KEY, id);
+    }
+    return id;
+}
+
 const Chatbot = ({ chatbotState }) => {
+    const [visitorId] = useState(getOrCreateVisitorId);
     const [messages, setMessages] = useState([]);
     const [input, setInput] = useState('');
     const chatContainerRef = useRef(null);
@@ -15,7 +30,7 @@ const Chatbot = ({ chatbotState }) => {
         try {
             const inputtedMessage = input;
             setInput('');
-            const response = await axios.post(`${process.env.REACT_APP_API_BASE}/chat`, { sender: 'user', message: inputtedMessage });
+            const response = await axios.post(`${process.env.REACT_APP_API_BASE}/chat`, { sender: visitorId, message: inputtedMessage });
             setMessages(prevMessages => [
                 ...prevMessages,
                 { sender: 'assistant', text: response.data.reply }
