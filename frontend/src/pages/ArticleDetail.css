@@ -56,3 +56,57 @@
     line-height: 38px;
   }
 }
+
+/* --------------------------------------------------
+--------------- CMS Image Block (article body) ------
+----------------------------------------------------- */
+/* Emitted by the "Image (resizable)" editor component in
+   frontend/public/admin/image-block.js -- keep in sync with
+   frontend/public/admin/preview.css. */
+
+.cms-image {
+  max-width: 100%;
+  height: auto;
+  margin-bottom: 1rem;
+}
+
+.cms-image-left {
+  float: left;
+  margin: 0 1.5rem 1rem 0;
+}
+
+.cms-image-right {
+  float: right;
+  margin: 0 0 1rem 1.5rem;
+}
+
+.cms-image-center {
+  display: block;
+  float: none;
+  margin: 0 auto 1rem;
+}
+
+.cms-image-none {
+  display: block;
+  float: none;
+}
+
+/* Prevents .blog-container's background from collapsing when a floated
+   cms-image is the last (or only) piece of content in its run. */
+.blog-container::after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+@media screen and (max-width: 767px) {
+  .cms-image-left,
+  .cms-image-right,
+  .cms-image-center {
+    float: none;
+    width: 100% !important;
+    margin-left: 0;
+    margin-right: 0;
+    display: block;
+  }
+}

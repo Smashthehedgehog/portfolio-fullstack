@@ -1,3 +1,9 @@
+# Enables local testing without GitHub OAuth: run `npx decap-server` from the
+# repo root, then Decap auto-detects localhost and proxies reads/writes to
+# the local git working tree instead of the GitHub API. Inert (ignored) when
+# the CMS is loaded from any non-localhost origin, so safe to leave committed.
+local_backend: true
+
 backend:
   name: github
   repo: Smashthehedgehog/portfolio-fullstack
